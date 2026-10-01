@@ -1,0 +1,485 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Interactive Map — WalkSafe</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <style is:global>
+        /* Map container setup */
+        #demo-map {
+            width: 100%;
+            height: calc(100vh - 61px); /* Header is ~61px tall */
+        }
+        
+        /* Clean tooltip overrides */
+        .leaflet-tooltip.clean-tooltip {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .leaflet-tooltip.clean-tooltip::before {
+            display: none !important;
+        }
+        
+        /* Ensure smooth HUD collapse transitions */
+        .hud-content-wrapper {
+            transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out, margin-top 0.3s ease-in-out;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen flex flex-col overflow-hidden antialiased">
+    
+    <!-- 1. Top Sticky Navigation Bar -->
+    <header class="bg-emerald-600 text-white px-6 py-3.5 flex items-center justify-between shadow-sm z-[1000] relative shrink-0">
+        <a href="/demo-select" class="text-emerald-50 hover:text-white font-medium text-sm flex items-center gap-1.5 transition whitespace-nowrap">
+            <span>&larr;</span> Demo Hub
+        </a>
+        
+        <div class="flex-1 flex justify-center px-4">
+            <select id="corridor-select" class="bg-emerald-700/50 border border-emerald-500/50 text-white text-sm rounded-xl px-4 py-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-400 appearance-none cursor-pointer w-full max-w-lg text-center font-medium shadow-sm transition hover:bg-emerald-700/70">
+                <option value="corridor-1">Corridor 1: Alpha (Station) ──&gt; Beta (College)</option>
+                <option value="corridor-2">Corridor 2: Alpha (Station) ──&gt; Charlie (Market)</option>
+                <option value="corridor-3">Corridor 3: Delta (Colony) ──&gt; Beta (College)</option>
+            </select>
+        </div>
+        
+        <span class="bg-emerald-700/80 text-emerald-100 text-xs px-3 py-1 rounded-full font-medium hidden md:block whitespace-nowrap shadow-inner border border-emerald-600">
+            Breathing Zone 1.5m &bull; Hyperlocal Simulation
+        </span>
+        <a href="/menu" class="ml-3 w-8 h-8 rounded-full bg-emerald-700/50 flex items-center justify-center hover:bg-emerald-700 transition shrink-0" aria-label="Menu">
+                <svg class="w-5 h-5 text-emerald-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </a>
+    </header>
+
+    <!-- 2. Full-Canvas Leaflet Container & HUDs -->
+    <main class="relative flex-grow w-full">
+        <!-- The Map -->
+        <div id="demo-map" class="absolute inset-0 z-0"></div>
+
+        <!-- 5. Collapsible Route Comparison HUD (Bottom Sheet) -->
+        <div id="hud-compare" class="absolute bottom-6 left-6 z-[1000] w-96 bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 flex flex-col origin-bottom-left transition-transform" data-collapsed="false">
+            <div class="flex items-center justify-between cursor-pointer" id="hud-compare-header">
+                <h3 class="font-bold text-slate-900 tracking-tight">Route Trade-Off</h3>
+                <button class="text-slate-500 hover:text-slate-800 text-sm font-medium px-2 py-1 rounded transition" id="hud-compare-toggle">
+                    <span class="toggle-text">⌄ Hide</span>
+                </button>
+            </div>
+            
+            <div id="hud-compare-content" class="hud-content-wrapper flex flex-col gap-3 mt-3 opacity-100" style="max-height: 500px;">
+                <!-- Route Toggle Tabs -->
+                <div class="flex bg-slate-100 p-1 rounded-xl">
+                    <button class="flex-1 bg-white shadow-sm text-emerald-700 font-bold text-sm py-1.5 rounded-lg border border-slate-200/50 transition">● Walksafe Clean</button>
+                    <button class="flex-1 text-slate-500 font-medium text-sm py-1.5 rounded-lg hover:text-slate-700 transition">Direct Arterial</button>
+                </div>
+                
+                <!-- Metrics Grid -->
+                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-2.5 text-sm shadow-inner">
+                    <div class="flex items-start gap-2.5">
+                        <span class="text-emerald-600 mt-0.5 opacity-90 text-base leading-none">🫁</span>
+                        <div id="metric-exposure" class="text-slate-700 font-semibold leading-tight">-38% Particulate Inhalation (Modelled Estimate)</div>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <span class="text-emerald-600 mt-0.5 opacity-90 text-base leading-none">⏱️</span>
+                        <div id="metric-time" class="text-slate-700 leading-tight">12 mins &bull; 920m <span class="text-slate-500 text-xs ml-1">(vs 9 mins &bull; 700m direct)</span></div>
+                    </div>
+                    <div class="flex items-start gap-2.5">
+                        <span class="text-emerald-600 mt-0.5 opacity-90 text-base leading-none">🌳</span>
+                        <div id="metric-microclimate" class="text-slate-700 leading-tight">75% Tree Canopy &bull; Dedicated Sidewalk</div>
+                    </div>
+                </div>
+                
+                <!-- Realistic Trade-Off Callout -->
+                <div id="hud-tradeoff" class="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-2.5 text-xs shadow-sm leading-relaxed font-medium">
+                    Bypasses heavy PM10 dust &amp; 12-vehicle auto idling stand. Honestly traverses 1 minor open drain odor spot.
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Collapsible 2-Tap Street Hazard Reporter -->
+        <div id="hud-reporter" class="absolute bottom-6 right-6 z-[1000] bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 w-80 origin-bottom-right transition-transform" data-collapsed="false">
+            <div class="flex items-center justify-between cursor-pointer" id="hud-reporter-header">
+                <h3 class="font-bold text-slate-900 tracking-tight">Report Street Hazard</h3>
+                <button class="text-slate-500 hover:text-slate-800 text-sm font-medium px-2 py-1 rounded transition" id="hud-reporter-toggle">
+                    <span class="toggle-text">⌄ Hide</span>
+                </button>
+            </div>
+            
+            <div id="hud-reporter-content" class="hud-content-wrapper flex flex-col mt-3 opacity-100" style="max-height: 500px;">
+                <!-- Step 1 Categories -->
+                <div id="hazard-step-1" class="grid grid-cols-2 gap-2">
+                    <button class="hazard-cat-btn bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300" data-cat="dust">🚧 Dust</button>
+                    <button class="hazard-cat-btn bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300" data-cat="odor">🤢 Odor</button>
+                    <button class="hazard-cat-btn bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300" data-cat="smog">🔥 Smog</button>
+                    <button class="hazard-cat-btn bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-slate-300" data-cat="idling">🚗💨 Idling</button>
+                </div>
+                
+                <!-- Step 2 Sub-Options (Hidden initially) -->
+                <div id="hazard-step-2" class="hidden flex-col gap-2">
+                    <div class="flex items-center justify-between mb-1.5 px-1">
+                        <span id="hazard-step-2-title" class="text-xs font-bold text-slate-400 uppercase tracking-wider">Select Specific Hazard</span>
+                        <button id="hazard-back-btn" class="text-xs text-blue-600 hover:text-blue-800 font-semibold transition">&larr; Back</button>
+                    </div>
+                    <div id="hazard-options" class="grid grid-cols-1 gap-2">
+                        <!-- Injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Toast Notification (Hidden) -->
+        <div id="toast" class="absolute top-6 left-1/2 -translate-x-1/2 z-[2000] bg-slate-900 text-white px-5 py-2.5 rounded-xl shadow-xl transform -translate-y-16 opacity-0 transition-all duration-300 font-medium text-sm pointer-events-none flex items-center gap-2">
+            <span class="text-emerald-400">✓</span> Hazard pinned to local layer!
+        </div>
+    </main>
+
+    <script is:inline>
+        // Wait for DOM to be ready and Leaflet to load from unpkg
+        document.addEventListener("DOMContentLoaded", () => {
+            const L = window.L;
+            if (!L) {
+                console.error("Leaflet library failed to load.");
+                return;
+            }
+
+            // --- Configuration Data ---
+
+            const NODES = {
+                alpha: { loc: [19.0435, 72.8850], name: "Node Alpha", desc: "Station Transit Hub", color: "#3b82f6" },
+                beta:  { loc: [19.0480, 72.8930], name: "Node Beta", desc: "College Campus Gate", color: "#10b981" },
+                charlie: { loc: [19.0465, 72.8870], name: "Node Charlie", desc: "Market Square & Auto Stand", color: "#f59e0b" },
+                delta: { loc: [19.0440, 72.8910], name: "Node Delta", desc: "Colony Shaded Lane", color: "#14b8a6" }
+            };
+
+            const CORRIDORS = {
+                'corridor-1': {
+                    walksafe: [NODES.alpha.loc, [19.0438, 72.8880], NODES.delta.loc, [19.0460, 72.8920], NODES.beta.loc], // Follow path via Delta
+                    direct: [NODES.alpha.loc, NODES.charlie.loc, NODES.beta.loc],
+                    metrics: {
+                        exposure: "-38% Particulate Inhalation (Modelled Estimate)",
+                        time: "12 mins &bull; 920m <span class=\"text-slate-500 text-xs ml-1\">(vs 9 mins &bull; 700m direct)</span>",
+                        microclimate: "75% Tree Canopy &bull; Dedicated Sidewalk",
+                        tradeoff: "Bypasses heavy PM10 dust &amp; 12-vehicle auto idling stand. Honestly traverses 1 minor open drain odor spot."
+                    }
+                },
+                'corridor-2': {
+                    walksafe: [NODES.alpha.loc, [19.0445, 72.8860], [19.0455, 72.8865], NODES.charlie.loc], // slight detour
+                    direct: [NODES.alpha.loc, NODES.charlie.loc],
+                    metrics: {
+                        exposure: "-55% Tailpipe NOx Exposure",
+                        time: "7 mins &bull; 550m <span class=\"text-slate-500 text-xs ml-1\">(vs 5 mins &bull; 400m direct)</span>",
+                        microclimate: "Shielded Sidewalk &bull; Back-lane Route",
+                        tradeoff: "+2 minute diversion via shaded back-lane entirely avoids stationary auto/bus exhaust choke point."
+                    }
+                },
+                'corridor-3': {
+                    walksafe: [NODES.delta.loc, [19.0460, 72.8920], [19.0470, 72.8925], NODES.beta.loc],
+                    direct: [NODES.delta.loc, NODES.beta.loc],
+                    metrics: {
+                        exposure: "-25% Resuspended Curb Dust",
+                        time: "6 mins &bull; 480m <span class=\"text-slate-500 text-xs ml-1\">(vs 5 mins &bull; 410m direct)</span>",
+                        microclimate: "Continuous Paved Footpath &bull; Elevated Breathing Zone",
+                        tradeoff: "Keeps breathing zone elevated on continuous sidewalk instead of forcing pedestrian into roadway tire-dust wake."
+                    }
+                }
+            };
+
+            const HAZARDS = [
+                { loc: [19.0468, 72.8872], icon: '🚧', text: "Active Road Trench (PM10 Dust)" },
+                { loc: [19.0462, 72.8868], icon: '🚗💨', text: "Auto-Rickshaw Idling Cluster (NOx/Soot)" },
+                { loc: [19.0442, 72.8905], icon: '🤢', text: "Minor Drain Odor (H2S)" },
+                { loc: [19.0455, 72.8925], icon: '🌳', text: "Continuous Neem Canopy (75% Shade)" }
+            ];
+
+            const HAZARD_OPTS = {
+                dust: ['Road Trench', 'Dry Cutting', 'Unpaved Shoulder'],
+                odor: ['Open Drain', 'Stagnant Garbage', 'Chemical'],
+                smog: ['Leaf Burning', 'Plastic Waste', 'Inversion Smog'],
+                idling: ['Auto Stand', 'Bus Halts', 'Delivery Queue']
+            };
+
+            // --- Init Map ---
+            
+            const map = L.map('demo-map', { 
+                zoomControl: false,
+                attributionControl: false 
+            }).setView([19.0455, 72.8890], 16);
+            
+            L.control.zoom({ position: 'topleft' }).addTo(map);
+            L.control.attribution({ position: 'topright' }).addTo(map);
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // --- Map State ---
+            
+            let currentWalksafeLine = null;
+            let currentDirectLine = null;
+
+            // --- Render Nodes ---
+            
+            Object.values(NODES).forEach(node => {
+                L.circleMarker(node.loc, {
+                    radius: 8,
+                    fillColor: node.color,
+                    color: '#ffffff',
+                    weight: 2,
+                    opacity: 1,
+                    fillOpacity: 0.95
+                })
+                .bindTooltip(`
+                    <div class="bg-white border border-slate-200 shadow-sm rounded-lg px-2.5 py-1.5 text-xs font-sans whitespace-nowrap">
+                        <strong class="text-slate-900">${node.name}</strong><br>
+                        <span class="text-slate-500">${node.desc}</span>
+                    </div>
+                `, {
+                    permanent: true,
+                    direction: 'top',
+                    className: 'clean-tooltip',
+                    offset: [0, -10]
+                })
+                .addTo(map);
+            });
+
+            // --- Render Pre-seeded Hazards ---
+            
+            HAZARDS.forEach(h => {
+                const iconHtml = `
+                    <div class="bg-white border border-slate-200 shadow-md rounded-full w-8 h-8 flex items-center justify-center text-lg z-10 transition hover:scale-110">
+                        ${h.icon}
+                    </div>
+                `;
+                const customIcon = L.divIcon({
+                    html: iconHtml,
+                    className: 'clean-tooltip', // reuse class to remove default divIcon background
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 16]
+                });
+                
+                L.marker(h.loc, { icon: customIcon })
+                 .bindTooltip(`
+                    <div class="text-xs font-semibold px-2.5 py-1.5 bg-slate-900 text-white rounded-lg shadow-lg whitespace-nowrap">
+                        ${h.text}
+                    </div>
+                 `, { 
+                    direction: 'right', 
+                    className: 'clean-tooltip',
+                    offset: [16, 0] 
+                })
+                 .addTo(map);
+            });
+
+            // --- Update Corridor Logic ---
+            
+            function updateCorridor(id) {
+                const data = CORRIDORS[id];
+                if (!data) return;
+
+                // Remove old lines
+                if (currentWalksafeLine) map.removeLayer(currentWalksafeLine);
+                if (currentDirectLine) map.removeLayer(currentDirectLine);
+
+                // Draw Direct Arterial (Orange dashed)
+                currentDirectLine = L.polyline(data.direct, {
+                    color: '#f97316',
+                    weight: 4,
+                    dashArray: '8, 8',
+                    opacity: 0.8,
+                    lineJoin: 'round'
+                }).addTo(map);
+
+                // Draw Walksafe (Emerald solid)
+                currentWalksafeLine = L.polyline(data.walksafe, {
+                    color: '#059669',
+                    weight: 6,
+                    opacity: 0.9,
+                    lineJoin: 'round'
+                }).addTo(map);
+
+                // Bring route to back relative to markers
+                currentDirectLine.bringToBack();
+                currentWalksafeLine.bringToBack();
+
+                // Fit bounds with animation
+                const group = new L.featureGroup([currentWalksafeLine, currentDirectLine]);
+                map.flyToBounds(group.getBounds(), { padding: [80, 80], duration: 0.8 });
+
+                // Update Metrics HUD
+                document.getElementById('metric-exposure').innerHTML = data.metrics.exposure;
+                document.getElementById('metric-time').innerHTML = data.metrics.time;
+                document.getElementById('metric-microclimate').innerHTML = data.metrics.microclimate;
+                document.getElementById('hud-tradeoff').innerHTML = data.metrics.tradeoff;
+            }
+
+            // --- Initialize Active Corridor ---
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            let activeCorridor = urlParams.get('corridor') || 'corridor-1';
+            const selectEl = document.getElementById('corridor-select');
+            
+            if (selectEl.querySelector(`option[value="${activeCorridor}"]`)) {
+                selectEl.value = activeCorridor;
+            } else {
+                activeCorridor = 'corridor-1';
+            }
+            
+            // Allow Leaflet a moment to compute container sizes
+            setTimeout(() => {
+                updateCorridor(activeCorridor);
+            }, 100);
+
+            // Corridor Switcher Event
+            selectEl.addEventListener('change', (e) => {
+                updateCorridor(e.target.value);
+                // Update URL parameter transparently
+                const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?corridor=' + e.target.value;
+                window.history.pushState({path:newurl},'',newurl);
+            });
+
+            // --- Collapsible HUD Logic ---
+            
+            function toggleHUD(containerId, contentId, toggleBtnId) {
+                const container = document.getElementById(containerId);
+                const content = document.getElementById(contentId);
+                const btnText = document.getElementById(toggleBtnId).querySelector('.toggle-text');
+                
+                const isCollapsed = container.getAttribute('data-collapsed') === 'true';
+                
+                if (isCollapsed) {
+                    // Expand
+                    content.style.maxHeight = "500px";
+                    content.style.opacity = "1";
+                    content.style.marginTop = "0.75rem";
+                    btnText.textContent = "⌄ Hide";
+                    container.setAttribute('data-collapsed', 'false');
+                } else {
+                    // Collapse
+                    content.style.maxHeight = "0px";
+                    content.style.opacity = "0";
+                    content.style.marginTop = "0px";
+                    btnText.textContent = "⌃ Expand";
+                    container.setAttribute('data-collapsed', 'true');
+                }
+            }
+
+            document.getElementById('hud-compare-header').addEventListener('click', () => {
+                toggleHUD('hud-compare', 'hud-compare-content', 'hud-compare-toggle');
+            });
+
+            document.getElementById('hud-reporter-header').addEventListener('click', () => {
+                toggleHUD('hud-reporter', 'hud-reporter-content', 'hud-reporter-toggle');
+            });
+
+            // --- Hazard Reporter Interaction Logic ---
+            
+            const step1 = document.getElementById('hazard-step-1');
+            const step2 = document.getElementById('hazard-step-2');
+            const optionsContainer = document.getElementById('hazard-options');
+            let selectedCat = null;
+            let selectedIcon = null;
+
+            document.querySelectorAll('.hazard-cat-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    selectedCat = btn.getAttribute('data-cat');
+                    selectedIcon = btn.textContent.split(' ')[0]; // E.g., extracts "🚧"
+                    
+                    // Populate Step 2 dynamically
+                    optionsContainer.innerHTML = '';
+                    HAZARD_OPTS[selectedCat].forEach(opt => {
+                        const optBtn = document.createElement('button');
+                        optBtn.className = 'w-full text-left bg-white hover:bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition';
+                        optBtn.textContent = opt;
+                        optBtn.addEventListener('click', () => submitHazard(opt));
+                        optionsContainer.appendChild(optBtn);
+                    });
+
+                    step1.classList.add('hidden');
+                    step2.classList.remove('hidden');
+                    step2.classList.add('flex');
+                });
+            });
+
+            document.getElementById('hazard-back-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // prevent header click
+                step2.classList.add('hidden');
+                step2.classList.remove('flex');
+                step1.classList.remove('hidden');
+            });
+
+            function submitHazard(subOption) {
+                // Drop pin at current map center to simulate "my location" or map reticle
+                const center = map.getCenter();
+                
+                const customIcon = L.divIcon({
+                    html: `
+                        <div class="bg-red-50 border-2 border-red-500 shadow-lg rounded-full w-10 h-10 flex items-center justify-center text-xl z-20 animate-bounce">
+                            ${selectedIcon}
+                        </div>
+                    `,
+                    className: 'clean-tooltip',
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 20]
+                });
+
+                L.marker(center, { icon: customIcon })
+                 .bindTooltip(`
+                    <div class="text-xs font-semibold px-2.5 py-1.5 bg-red-600 text-white rounded-lg shadow-lg whitespace-nowrap">
+                        User Reported: ${subOption}
+                    </div>
+                 `, { 
+                    direction: 'top', 
+                    className: 'clean-tooltip',
+                    offset: [0, -20] 
+                })
+                 .addTo(map);
+
+                // Show Toast Notification
+                const toast = document.getElementById('toast');
+                toast.style.transform = 'translate(-50%, 0)'; // Slide down into view
+                toast.style.opacity = '1';
+                
+                setTimeout(() => {
+                    toast.style.transform = 'translate(-50%, -64px)'; // Slide back up
+                    toast.style.opacity = '0';
+                }, 3500);
+
+                // Reset Reporter UI back to Step 1
+                step2.classList.add('hidden');
+                step2.classList.remove('flex');
+                step1.classList.remove('hidden');
+
+                // Simulate saving to local persistence
+                try {
+                    const saved = JSON.parse(localStorage.getItem('walksafe_hazards') || '[]');
+                    saved.push({ 
+                        lat: center.lat, 
+                        lng: center.lng, 
+                        category: selectedCat, 
+                        type: subOption, 
+                        timestamp: Date.now() 
+                    });
+                    localStorage.setItem('walksafe_hazards', JSON.stringify(saved));
+                } catch(e) {
+                    console.error('Failed to save to local storage', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

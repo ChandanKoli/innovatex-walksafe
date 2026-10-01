@@ -1,0 +1,178 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Priorities — WalkSafe</title>
+    <style>
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #059669; /* emerald-600 */
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #e2e8f0; /* slate-200 */
+            border-radius: 4px;
+        }
+        input[type=range]:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
+    <!-- Top Bar -->
+    <header class="bg-emerald-600 text-white p-4 shadow-sm sticky top-0 z-10">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <a href="/menu" class="text-emerald-50 hover:text-white font-medium flex items-center gap-1 transition">
+                <span>&larr;</span> <span class="hidden sm:inline">Back</span>
+            </a>
+            <h1 class="text-lg font-bold">Hazard Priority Intensity</h1>
+            <div class="w-12"></div> <!-- Spacer -->
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 relative">
+        <div class="max-w-xl mx-auto my-8 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col gap-6">
+            <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
+                Calibrate how aggressively Walksafe routes bypass specific micro-hazards. Values range from 1 (Standard) to 4 (Critical Avoidance).
+            </p>
+
+            <form id="priority-form" class="flex flex-col gap-6 mt-2">
+                <!-- Slider 1 -->
+                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
+                    <div class="flex justify-between items-center">
+                        <label for="dust" class="font-semibold text-slate-800">🚧 Active Road Dust & Excavation <span class="block text-xs font-normal text-slate-500">(Fugitive PM10)</span></label>
+                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="dust-val">3</span>
+                    </div>
+                    <input type="range" id="dust" name="dust" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('dust-val').innerText = this.value" />
+                    <div class="flex justify-between text-xs text-slate-400 px-1">
+                        <span>1</span><span>2</span><span>3</span><span>4</span>
+                    </div>
+                </div>
+
+                <!-- Slider 2 -->
+                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
+                    <div class="flex justify-between items-center">
+                        <label for="odor" class="font-semibold text-slate-800">🤢 Unusual Drain & Waste Odor <span class="block text-xs font-normal text-slate-500">(VOCs / Sewage gas)</span></label>
+                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="odor-val">3</span>
+                    </div>
+                    <input type="range" id="odor" name="odor" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('odor-val').innerText = this.value" />
+                    <div class="flex justify-between text-xs text-slate-400 px-1">
+                        <span>1</span><span>2</span><span>3</span><span>4</span>
+                    </div>
+                </div>
+
+                <!-- Slider 3 -->
+                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
+                    <div class="flex justify-between items-center">
+                        <label for="smog" class="font-semibold text-slate-800">🔥 Smog & Open Burning <span class="block text-xs font-normal text-slate-500">(Black Carbon / Smoke)</span></label>
+                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="smog-val">3</span>
+                    </div>
+                    <input type="range" id="smog" name="smog" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('smog-val').innerText = this.value" />
+                    <div class="flex justify-between text-xs text-slate-400 px-1">
+                        <span>1</span><span>2</span><span>3</span><span>4</span>
+                    </div>
+                </div>
+
+                <!-- Slider 4 -->
+                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
+                    <div class="flex justify-between items-center">
+                        <label for="idling" class="font-semibold text-slate-800">🚗💨 Engine Halt & Transit Idling <span class="block text-xs font-normal text-slate-500">(Tailpipe NOx & Soot)</span></label>
+                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="idling-val">3</span>
+                    </div>
+                    <input type="range" id="idling" name="idling" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('idling-val').innerText = this.value" />
+                    <div class="flex justify-between text-xs text-slate-400 px-1">
+                        <span>1</span><span>2</span><span>3</span><span>4</span>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <button type="submit" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl w-full text-center transition">
+                    Save Routing Weights
+                </button>
+            </form>
+        </div>
+
+        <!-- Notification Banner -->
+        <div id="banner" class="fixed top-20 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-lg font-medium transition-all duration-300 opacity-0 pointer-events-none -translate-y-4">
+            Routing weights saved!
+        </div>
+    </main>
+
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('priority-form');
+            const banner = document.getElementById('banner');
+            
+            const inputs = {
+                dust: document.getElementById('dust'),
+                odor: document.getElementById('odor'),
+                smog: document.getElementById('smog'),
+                idling: document.getElementById('idling')
+            };
+            
+            const labels = {
+                dust: document.getElementById('dust-val'),
+                odor: document.getElementById('odor-val'),
+                smog: document.getElementById('smog-val'),
+                idling: document.getElementById('idling-val')
+            };
+
+            // Load from localStorage
+            const savedData = localStorage.getItem('walksafe_priorities');
+            if (savedData) {
+                try {
+                    const priorities = JSON.parse(savedData);
+                    for (const [key, val] of Object.entries(priorities)) {
+                        if (inputs[key]) {
+                            inputs[key].value = val;
+                            labels[key].innerText = val;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error parsing priority data', e);
+                }
+            }
+
+            // Save to localStorage
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const priorities = {
+                    dust: inputs.dust.value,
+                    odor: inputs.odor.value,
+                    smog: inputs.smog.value,
+                    idling: inputs.idling.value
+                };
+
+                localStorage.setItem('walksafe_priorities', JSON.stringify(priorities));
+
+                // Show banner
+                banner.classList.remove('opacity-0', '-translate-y-4');
+                banner.classList.add('opacity-100', 'translate-y-0');
+                
+                setTimeout(() => {
+                    banner.classList.remove('opacity-100', 'translate-y-0');
+                    banner.classList.add('opacity-0', '-translate-y-4');
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+</html>

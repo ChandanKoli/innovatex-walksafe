@@ -1,0 +1,191 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Pin Route — WalkSafe</title>
+    <!-- Load Leaflet CSS via unpkg -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Load Leaflet JS via unpkg -->
+    <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans h-screen flex flex-col antialiased overflow-hidden">
+    <!-- Top Bar -->
+    <header class="bg-emerald-600 text-white px-6 py-3.5 flex items-center justify-between z-[1000] relative shadow-md">
+        <div class="flex-1">
+            <a href="/" class="text-emerald-50 hover:text-white transition font-medium text-sm md:text-base whitespace-nowrap">← Back to Home</a>
+        </div>
+        <div class="flex-1 text-center hidden md:block text-sm font-medium text-emerald-100 whitespace-nowrap">
+            Click on map to drop Origin & Destination pins
+        </div>
+        <div class="flex-1 flex justify-end">
+            <button id="reset-pins-btn" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-sm font-medium transition whitespace-nowrap">
+                Reset Pins
+            </button>
+            <a href="/menu" class="ml-3 w-8 h-8 rounded-full bg-emerald-700/50 flex items-center justify-center hover:bg-emerald-700 transition shrink-0" aria-label="Menu">
+                <svg class="w-5 h-5 text-emerald-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <!-- Full Canvas Map Container -->
+    <div class="relative w-full h-[calc(100vh-61px)]">
+        <div id="pin-map" class="w-full h-full absolute inset-0 z-0"></div>
+
+        <!-- Floating Top Instruction Pill -->
+        <div id="top-pill" class="z-[1000] absolute top-4 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur px-5 py-2.5 rounded-full border border-slate-200 shadow-lg text-xs font-semibold text-slate-700 flex items-center gap-2 whitespace-nowrap transition-colors duration-300 pointer-events-none">
+            🟢 Step 1: Click anywhere on the map to set START PIN
+        </div>
+
+        <!-- Floating Bottom Confirmation Bar -->
+        <div id="bottom-bar" class="z-[1000] absolute bottom-6 left-1/2 -translate-x-1/2 w-11/12 max-w-xl bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 flex items-center justify-between transition-all duration-300 translate-y-0">
+            <div id="coords-readout" class="text-sm font-medium text-slate-500 font-mono">
+                Awaiting 2 pins...
+            </div>
+            <button id="confirm-route-btn" disabled class="bg-slate-200 text-slate-400 font-bold py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap">
+                Confirm Route ➔
+            </button>
+        </div>
+    </div>
+
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Ensure Leaflet is loaded
+            if (typeof L === 'undefined') {
+                console.error('Leaflet is not loaded');
+                return;
+            }
+
+            // Initialize Leaflet map
+            const map = L.map('pin-map', {
+                zoomControl: false // Move zoom control
+            }).setView([19.045, 72.889], 16);
+
+            L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+            // Add CartoDB Positron light tiles
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
+
+            // State
+            let clickCount = 0;
+            let startMarker = null;
+            let endMarker = null;
+            let polyline = null;
+
+            // DOM Elements
+            const topPill = document.getElementById('top-pill');
+            const coordsReadout = document.getElementById('coords-readout');
+            const confirmBtn = document.getElementById('confirm-route-btn');
+            const resetBtn = document.getElementById('reset-pins-btn');
+
+            function updateUI() {
+                if (clickCount === 0) {
+                    topPill.innerHTML = '🟢 Step 1: Click anywhere on the map to set START PIN';
+                    coordsReadout.innerHTML = 'Awaiting 2 pins...';
+                    confirmBtn.disabled = true;
+                    confirmBtn.className = 'bg-slate-200 text-slate-400 font-bold py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap';
+                } else if (clickCount === 1) {
+                    topPill.innerHTML = '🔴 Step 2: Click on the map to set DESTINATION PIN';
+                    const lat = startMarker.getLatLng().lat.toFixed(4);
+                    const lng = startMarker.getLatLng().lng.toFixed(4);
+                    coordsReadout.innerHTML = `<span class="text-emerald-600">Start:</span> ${lat}, ${lng}`;
+                    confirmBtn.disabled = true;
+                    confirmBtn.className = 'bg-slate-200 text-slate-400 font-bold py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap';
+                } else if (clickCount === 2) {
+                    topPill.innerHTML = '✅ Route pins locked! Ready to calculate.';
+                    const slat = startMarker.getLatLng().lat.toFixed(4);
+                    const slng = startMarker.getLatLng().lng.toFixed(4);
+                    const elat = endMarker.getLatLng().lat.toFixed(4);
+                    const elng = endMarker.getLatLng().lng.toFixed(4);
+                    coordsReadout.innerHTML = `<span class="text-emerald-600">S:</span> ${slat},${slng} <span class="text-slate-300 px-1">|</span> <span class="text-red-500">E:</span> ${elat},${elng}`;
+                    confirmBtn.disabled = false;
+                    confirmBtn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl text-sm shadow-sm transition whitespace-nowrap';
+                }
+            }
+
+            function clearMap() {
+                if (startMarker) map.removeLayer(startMarker);
+                if (endMarker) map.removeLayer(endMarker);
+                if (polyline) map.removeLayer(polyline);
+                startMarker = null;
+                endMarker = null;
+                polyline = null;
+                clickCount = 0;
+                updateUI();
+            }
+
+            // Map click handler
+            map.on('click', (e) => {
+                const latlng = e.latlng;
+
+                if (clickCount >= 2) {
+                    // Reset and start over
+                    clearMap();
+                }
+
+                if (clickCount === 0) {
+                    // Click 1: Drop green start marker
+                    startMarker = L.circleMarker(latlng, {
+                        radius: 8,
+                        fillColor: '#10b981', // emerald-500
+                        color: '#ffffff',     // white border
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 1
+                    }).addTo(map);
+                    clickCount = 1;
+                    updateUI();
+                } else if (clickCount === 1) {
+                    // Click 2: Drop red end marker
+                    endMarker = L.circleMarker(latlng, {
+                        radius: 8,
+                        fillColor: '#ef4444', // red-500
+                        color: '#ffffff',     // white border
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 1
+                    }).addTo(map);
+
+                    // Draw dashed connecting polyline
+                    polyline = L.polyline([startMarker.getLatLng(), endMarker.getLatLng()], {
+                        color: '#059669', // emerald-600
+                        weight: 3,
+                        dashArray: '8, 8',
+                        opacity: 0.8
+                    }).addTo(map);
+
+                    // Fit bounds to show both pins comfortably
+                    map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
+
+                    clickCount = 2;
+                    updateUI();
+                }
+            });
+
+            // Reset button
+            resetBtn.addEventListener('click', clearMap);
+
+            // Confirm button
+            confirmBtn.addEventListener('click', () => {
+                if (clickCount === 2) {
+                    const slat = startMarker.getLatLng().lat.toFixed(5);
+                    const slng = startMarker.getLatLng().lng.toFixed(5);
+                    const elat = endMarker.getLatLng().lat.toFixed(5);
+                    const elng = endMarker.getLatLng().lng.toFixed(5);
+                    // Redirect to /demo
+                    window.location.href = `/demo`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

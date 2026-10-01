@@ -1,0 +1,134 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Plan Walk — WalkSafe</title>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
+    <!-- Top Bar -->
+    <header class="bg-emerald-600 text-white px-6 py-3.5 flex items-center justify-between shadow-sm sticky top-0 z-40">
+        <div class="flex-1">
+            <a href="/" class="text-emerald-50 hover:text-white transition font-medium text-sm md:text-base">← Back to Home</a>
+        </div>
+        <div class="flex-1 text-center">
+            <h1 class="font-bold text-lg tracking-wide whitespace-nowrap">Plan Clean Walk</h1>
+        </div>
+        <div class="flex-1 flex justify-end">
+            <a href="/pin" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-sm font-medium transition flex items-center gap-1.5 whitespace-nowrap">
+                📍 Pin Mode
+            </a>
+            <a href="/menu" class="ml-3 w-8 h-8 rounded-full bg-emerald-700/50 flex items-center justify-center hover:bg-emerald-700 transition shrink-0" aria-label="Menu">
+                <svg class="w-5 h-5 text-emerald-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full px-4 py-8 flex flex-col items-center">
+        <!-- Center Card Container -->
+        <div class="w-full max-w-lg mx-auto bg-white rounded-3xl border border-slate-200 shadow-md p-8 flex flex-col gap-6">
+            
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-slate-900 mb-1">Set Origin & Destination</h2>
+                <p class="text-sm text-slate-500">Walksafe optimizes your path for minimal toxic particulate inhalation.</p>
+            </div>
+
+            <div class="flex flex-col relative">
+                <!-- Origin Input -->
+                <div class="flex flex-col gap-1.5 mb-2">
+                    <label class="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span> FROM (ORIGIN)
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="origin" placeholder="e.g., Station Transit Hub (Gate 1)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition" />
+                        <button type="button" class="whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold px-4 rounded-xl border border-slate-200 transition">📍 Current</button>
+                    </div>
+                </div>
+
+                <!-- Swap Button Row -->
+                <div class="flex items-center justify-center -my-3 z-10 relative">
+                   <button type="button" id="swap-btn" class="w-10 h-10 bg-white border border-slate-200 rounded-full shadow-sm flex items-center justify-center text-slate-500 hover:text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50 transition" aria-label="Swap">
+                       <span class="text-lg leading-none rotate-90">⇅</span>
+                   </button>
+                </div>
+
+                <!-- Destination Input -->
+                <div class="flex flex-col gap-1.5 mt-2">
+                    <label class="text-xs font-bold text-slate-500 flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-red-500"></span> TO (DESTINATION)
+                    </label>
+                    <input type="text" id="destination" placeholder="e.g., College Campus Gate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition" />
+                </div>
+            </div>
+
+            <!-- Quick Suggestion Chips -->
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button type="button" class="chip bg-white border border-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition">[Station Hub]</button>
+                <button type="button" class="chip bg-white border border-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition">[College Gate]</button>
+                <button type="button" class="chip bg-white border border-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition">[Market Square]</button>
+                <button type="button" class="chip bg-white border border-slate-200 text-slate-600 text-xs px-3 py-1.5 rounded-full hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition">[Colony Lane]</button>
+            </div>
+
+            <!-- Action Button -->
+            <button id="find-route-btn" type="button" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-6 rounded-2xl w-full text-center shadow-sm text-base transition mt-2">
+                Find Clean-Air Route ➔
+            </button>
+
+            <!-- Footer Callout -->
+            <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-xs text-emerald-800 flex items-start gap-2 mt-2">
+                <span class="text-base leading-none">🛡️</span>
+                <span><strong>Active Exposure Engine:</strong> Evaluates PM10 road cutting, idling auto queues, and tree shade corridors.</span>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        // Client-side interactions
+        document.addEventListener('DOMContentLoaded', () => {
+            const originInput = document.getElementById('origin') as HTMLInputElement;
+            const destInput = document.getElementById('destination') as HTMLInputElement;
+            const swapBtn = document.getElementById('swap-btn');
+            const chips = document.querySelectorAll('.chip');
+            const findRouteBtn = document.getElementById('find-route-btn');
+
+            // Swap functionality
+            swapBtn?.addEventListener('click', () => {
+                const temp = originInput.value;
+                originInput.value = destInput.value;
+                destInput.value = temp;
+            });
+
+            // Chip auto-fill (fills empty input, prioritizes dest if origin is filled)
+            chips.forEach(chip => {
+                chip.addEventListener('click', (e) => {
+                    let text = (e.target as HTMLElement).textContent?.trim() || '';
+                    // Remove brackets
+                    text = text.replace(/^\[/, '').replace(/\]$/, '');
+                    
+                    if (!originInput.value) {
+                        originInput.value = text;
+                    } else if (!destInput.value) {
+                        destInput.value = text;
+                    } else {
+                        // If both filled, override dest just for UX ease
+                        destInput.value = text;
+                    }
+                });
+            });
+
+            // Find route redirection
+            findRouteBtn?.addEventListener('click', () => {
+                const from = encodeURIComponent(originInput.value || 'station');
+                const to = encodeURIComponent(destInput.value || 'college');
+                window.location.href = `/demo?from=${from}&to=${to}`;
+            });
+        });
+    </script>
+</body>
+</html>

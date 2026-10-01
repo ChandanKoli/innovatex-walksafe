@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Menu — WalkSafe</title>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
+    <!-- Top Bar -->
+    <header class="bg-emerald-600 text-white p-4 shadow-sm">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <a href="/" class="text-emerald-50 hover:text-white font-medium flex items-center gap-1 transition">
+                <span>&larr;</span> <span class="hidden sm:inline">Back to Home</span>
+            </a>
+            <h1 class="text-lg font-bold">Commuter Menu & Settings</h1>
+            <div class="w-16"></div> <!-- Spacer for centering -->
+        </div>
+    </header>
+
+    <main class="flex-grow p-4">
+        <!-- Menu Navigation Card -->
+        <div class="max-w-lg mx-auto mt-8 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 flex flex-col gap-3">
+            <a href="/profile" class="flex flex-col p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-100 transition">
+                <span class="font-semibold text-slate-800 text-lg">👤 Commuter Profile</span>
+                <span class="text-sm text-slate-500">Pace, respiratory sensitivity, name.</span>
+            </a>
+            <a href="/priority" class="flex flex-col p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-100 transition">
+                <span class="font-semibold text-slate-800 text-lg">⚖️ Hazard Priority Sliders</span>
+                <span class="text-sm text-slate-500">Set weights for dust, odor, smog, idling.</span>
+            </a>
+            <a href="/daily-routes" class="flex flex-col p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-100 transition">
+                <span class="font-semibold text-slate-800 text-lg">📍 Daily Bookmarked Routes</span>
+                <span class="text-sm text-slate-500">1-tap quick commute corridors.</span>
+            </a>
+            <a href="/demo-select" class="flex flex-col p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-100 transition">
+                <span class="font-semibold text-slate-800 text-lg">⚡ Showcase Demo (Pilot Hub)</span>
+                <span class="text-sm text-slate-500">Hypothetical Alpha to Delta network.</span>
+            </a>
+            <a href="/" class="flex flex-col p-4 rounded-2xl border border-slate-100 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-100 transition mt-2">
+                <span class="font-semibold text-slate-800 text-lg">🏠 Return to Navigation Home</span>
+            </a>
+        </div>
+        
+        <p class="text-center text-slate-400 text-xs mt-8">
+            Privacy First: All commuter preferences are stored 100% locally on this device.
+        </p>
+    </main>
+</body>
+</html>

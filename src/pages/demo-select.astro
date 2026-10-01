@@ -1,0 +1,230 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Demo Hub — WalkSafe</title>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
+    
+    <!-- 1. Global Header Bar -->
+    <header class="bg-emerald-600 text-white px-6 py-3.5 flex items-center justify-between shadow-sm sticky top-0 z-40">
+        <a href="/" class="text-emerald-50 hover:text-white font-medium text-sm flex items-center gap-1.5 transition">
+            <span>&larr;</span> Back to Home
+        </a>
+        <div class="font-bold text-lg tracking-wide hidden sm:block">InnovateX Interactive Showcase Network</div>
+        <div class="font-bold text-base tracking-wide sm:hidden">InnovateX</div>
+        <span class="bg-emerald-700/70 text-emerald-100 text-xs px-3 py-1 rounded-full font-medium">Techfest 2026 Pilot Hub</span>
+        <div class="flex-1 flex justify-end">
+            <a href="/menu" class="ml-3 w-8 h-8 rounded-full bg-emerald-700/50 flex items-center justify-center hover:bg-emerald-700 transition shrink-0" aria-label="Menu">
+                <svg class="w-5 h-5 text-emerald-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow w-full pb-12">
+        <!-- 2. Engineering Context Banner -->
+        <section class="max-w-4xl mx-auto mt-8 px-4">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex-1">
+                    <h1 class="text-xl font-bold text-emerald-900 mb-1 flex items-center gap-2">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        4-Node Urban Topology Simulation
+                    </h1>
+                    <p class="text-sm text-emerald-800/80 leading-relaxed">
+                        A crowdsourced civic network grows with pedestrian density. To demonstrate our relative exposure routing without simulating fake city-wide sensors, this showcase models a high-density 4-node corridor (Nodes Alpha, Beta, Charlie, Delta) where no route is an artificial 100% green paradise.
+                    </p>
+                </div>
+                <div class="shrink-0">
+                    <span class="bg-white border border-emerald-300 text-emerald-800 text-xs font-semibold px-3 py-1.5 rounded-xl whitespace-nowrap shadow-sm block">
+                        Relative Exposure Engine &bull; Zero-Cost Client Architecture
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. The 3 Corridor Showcase Cards -->
+        <section class="max-w-4xl mx-auto my-8 px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Card 1 -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col h-full ring-2 ring-emerald-500 ring-offset-2 ring-offset-slate-50 relative">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white text-[10px] uppercase font-bold tracking-wider px-3 py-1 rounded-full shadow-sm">Hero Corridor</div>
+                <div class="mb-4 mt-2">
+                    <span class="inline-block bg-emerald-100 text-emerald-800 font-bold text-xs px-2.5 py-1 rounded-lg mb-3">PRIMARY SHOWCASE &bull; -38% EXPOSURE</span>
+                    <h2 class="text-lg font-bold text-slate-900">Node Alpha ──&gt; Node Beta</h2>
+                    <div class="text-sm font-medium text-slate-500 mt-0.5">Station Transit Hub to College Campus Gate</div>
+                </div>
+                
+                <div class="flex-grow space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-emerald-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Walksafe
+                            </span>
+                            <span class="text-slate-700 text-right">12 mins &bull; 920m<br><span class="text-[11px] text-slate-500">(75% Canopy Shade)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Direct Arterial
+                            </span>
+                            <span class="text-slate-700 text-right">9 mins &bull; 700m<br><span class="text-[11px] text-slate-500">(High Dust &amp; Tailpipe)</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs text-slate-600 italic">
+                        <strong>Trade-Off:</strong> Bypasses active road excavation &amp; 12-vehicle auto idling stand. Honestly traverses 1 minor open-drain odor spot along colony lane.
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-2">
+                    <a href="/demo?corridor=corridor-1" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl w-full text-center block shadow-sm transition text-sm">
+                        Launch Corridor 1 &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col h-full">
+                <div class="mb-4">
+                    <span class="inline-block bg-amber-100 text-amber-900 font-bold text-xs px-2.5 py-1 rounded-lg mb-3">TAILPIPE NOx MITIGATION</span>
+                    <h2 class="text-lg font-bold text-slate-900">Node Alpha ──&gt; Node Charlie</h2>
+                    <div class="text-sm font-medium text-slate-500 mt-0.5">Station Transit Hub to Market Square</div>
+                </div>
+                
+                <div class="flex-grow space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-emerald-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Walksafe
+                            </span>
+                            <span class="text-slate-700 text-right">7 mins &bull; 550m<br><span class="text-[11px] text-slate-500">(Shielded Sidewalk)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Direct Arterial
+                            </span>
+                            <span class="text-slate-700 text-right">5 mins &bull; 400m<br><span class="text-[11px] text-slate-500">(Trapped Traffic Plume)</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs text-slate-600 italic">
+                        <strong>Trade-Off:</strong> +2 minute diversion via shaded back-lane entirely avoids stationary auto/bus exhaust choke point.
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-2">
+                    <a href="/demo?corridor=corridor-2" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl w-full text-center block shadow-sm transition text-sm">
+                        Launch Corridor 2 &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col h-full">
+                <div class="mb-4">
+                    <span class="inline-block bg-teal-100 text-teal-900 font-bold text-xs px-2.5 py-1 rounded-lg mb-3">CURB SAFETY &amp; RESUSPENSION</span>
+                    <h2 class="text-lg font-bold text-slate-900">Node Delta ──&gt; Node Beta</h2>
+                    <div class="text-sm font-medium text-slate-500 mt-0.5">Colony Lane to College Campus Gate</div>
+                </div>
+                
+                <div class="flex-grow space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-emerald-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Walksafe
+                            </span>
+                            <span class="text-slate-700 text-right">6 mins &bull; 480m<br><span class="text-[11px] text-slate-500">(Continuous Paved Footpath)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="font-semibold text-slate-700 flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-slate-400"></span> Direct Arterial
+                            </span>
+                            <span class="text-slate-700 text-right">5 mins &bull; 410m<br><span class="text-[11px] text-slate-500">(Broken Slabs / Traffic Flow)</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs text-slate-600 italic">
+                        <strong>Trade-Off:</strong> Keeps breathing zone elevated on continuous sidewalk instead of forcing pedestrian into roadway tire-dust wake.
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-2">
+                    <a href="/demo?corridor=corridor-3" class="bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 px-4 rounded-xl w-full text-center block shadow-sm transition text-sm">
+                        Launch Corridor 3 &rarr;
+                    </a>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- 4. Network Topology Summary Box -->
+        <section class="max-w-4xl mx-auto mb-10 px-4">
+            <div class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+                <div class="mb-5">
+                    <h3 class="text-lg font-bold text-slate-900">Pilot Network Topology Reference</h3>
+                    <p class="text-sm text-slate-500 mt-1">Simulated geocoordinates for the Walksafe interactive showcase.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Node Alpha -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold font-serif shrink-0 text-lg">&alpha;</div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-sm">[Node &alpha; (Alpha)]</div>
+                            <div class="text-xs font-medium text-slate-600 mt-0.5">Station Transit Hub &bull; Origin</div>
+                            <div class="text-[11px] text-slate-400 font-mono mt-1">Lat: 19.0435, Lng: 72.8850</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Node Beta -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold font-serif shrink-0 text-lg">&beta;</div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-sm">[Node &beta; (Beta)]</div>
+                            <div class="text-xs font-medium text-slate-600 mt-0.5">College Campus Gate &bull; Destination</div>
+                            <div class="text-[11px] text-slate-400 font-mono mt-1">Lat: 19.0480, Lng: 72.8930</div>
+                        </div>
+                    </div>
+
+                    <!-- Node Charlie -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold font-serif shrink-0 text-lg">&gamma;</div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-sm">[Node &gamma; (Charlie)]</div>
+                            <div class="text-xs font-medium text-slate-600 mt-0.5">Market Square &amp; Auto Stand &bull; Active Hazard Zone</div>
+                            <div class="text-[11px] text-slate-400 font-mono mt-1">Lat: 19.0465, Lng: 72.8870</div>
+                        </div>
+                    </div>
+
+                    <!-- Node Delta -->
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center font-bold font-serif shrink-0 text-lg">&delta;</div>
+                        <div>
+                            <div class="font-bold text-slate-800 text-sm">[Node &delta; (Delta)]</div>
+                            <div class="text-xs font-medium text-slate-600 mt-0.5">Colony Shaded Lane &bull; Clean Corridor Anchor</div>
+                            <div class="text-[11px] text-slate-400 font-mono mt-1">Lat: 19.0440, Lng: 72.8910</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-200 bg-white py-5 px-6 text-center text-xs text-slate-500 w-full">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-3">
+            <span>Walksafe — Pedestrian-First Air Quality Exposure Engine for InnovateX 2026.</span>
+            <div class="flex gap-4 font-medium">
+                <a href="#" class="hover:text-emerald-600 transition">Methodology</a>
+                <a href="#" class="hover:text-emerald-600 transition">Theme 2: Urban AQI</a>
+                <a href="#" class="hover:text-emerald-600 transition">GitHub</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

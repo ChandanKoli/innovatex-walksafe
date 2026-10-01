@@ -1,0 +1,138 @@
+---
+import '../styles/global.css';
+---
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Daily Routes — WalkSafe</title>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
+    <!-- Top Bar -->
+    <header class="bg-emerald-600 text-white p-4 shadow-sm sticky top-0 z-10">
+        <div class="max-w-xl mx-auto flex items-center justify-between">
+            <a href="/menu" class="text-emerald-50 hover:text-white font-medium flex items-center gap-1 transition">
+                <span>&larr;</span> <span class="hidden sm:inline">Back</span>
+            </a>
+            <h1 class="text-lg font-bold">Daily Corridors</h1>
+            <div class="w-12"></div> <!-- Spacer -->
+        </div>
+    </header>
+
+    <main class="flex-grow p-4 relative">
+        <div class="max-w-xl mx-auto my-8 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col gap-5">
+            <p class="text-slate-600 text-sm sm:text-base font-medium mb-2">
+                1-Tap shortcuts for frequent daily commutes.
+            </p>
+
+            <div class="flex flex-col gap-4" id="routes-container">
+                <!-- Pre-seeded Card A -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200 bg-slate-50">
+                    <div>
+                        <h3 class="font-bold text-slate-800">Station Transit Hub &xrarr; College Gate</h3>
+                        <div class="mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                            -38% Exposure &bull; 12 Mins
+                        </div>
+                    </div>
+                    <a href="/demo?corridor=corridor-1" class="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl text-center text-sm transition">
+                        Launch Route
+                    </a>
+                </div>
+
+                <!-- Pre-seeded Card B -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200 bg-slate-50">
+                    <div>
+                        <h3 class="font-bold text-slate-800">Station Transit Hub &xrarr; Market Square</h3>
+                        <div class="mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-semibold">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            Bypasses Auto Idling &bull; 7 Mins
+                        </div>
+                    </div>
+                    <a href="/demo?corridor=corridor-2" class="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl text-center text-sm transition">
+                        Launch Route
+                    </a>
+                </div>
+                
+                <!-- Dynamic user added routes will go here -->
+            </div>
+
+            <!-- Quick Add Section -->
+            <div class="mt-4 pt-6 border-t border-slate-200">
+                <h4 class="font-bold text-slate-800 mb-3">Quick Add</h4>
+                <form id="add-route-form" class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="new-route-input" placeholder="Bookmark Current Destination" required
+                        class="flex-grow px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-slate-50 text-slate-900" />
+                    <button type="submit" class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-6 rounded-xl text-center transition whitespace-nowrap">
+                        Add Route
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('add-route-form');
+            const input = document.getElementById('new-route-input');
+            const container = document.getElementById('routes-container');
+
+            // Render single route
+            const renderRoute = (name, index) => {
+                const div = document.createElement('div');
+                div.className = 'flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-200 bg-slate-50 fade-in';
+                
+                // Using a generic mockup for new routes
+                div.innerHTML = `
+                    <div>
+                        <h3 class="font-bold text-slate-800">Current Location &xrarr; ${name}</h3>
+                        <div class="mt-1 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-xs font-semibold">
+                            Custom Bookmark
+                        </div>
+                    </div>
+                    <a href="/demo?corridor=custom-${index}" class="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-xl text-center text-sm transition">
+                        Launch Route
+                    </a>
+                `;
+                container.appendChild(div);
+            };
+
+            // Load saved routes on mount
+            const loadRoutes = () => {
+                const saved = localStorage.getItem('walksafe_saved_routes');
+                if (saved) {
+                    try {
+                        const routes = JSON.parse(saved);
+                        routes.forEach((route, idx) => renderRoute(route.name, idx + 3)); // +3 to avoid pre-seeded id collisions
+                    } catch(e) {
+                        console.error('Error loading routes', e);
+                    }
+                }
+            };
+
+            loadRoutes();
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const routeName = input.value.trim();
+                if (!routeName) return;
+
+                let routes = [];
+                const saved = localStorage.getItem('walksafe_saved_routes');
+                if (saved) {
+                    try {
+                        routes = JSON.parse(saved);
+                    } catch(e) {}
+                }
+
+                routes.push({ name: routeName, id: Date.now() });
+                localStorage.setItem('walksafe_saved_routes', JSON.stringify(routes));
+
+                renderRoute(routeName, routes.length + 2);
+                input.value = '';
+            });
+        });
+    </script>
+</body>
+</html>
