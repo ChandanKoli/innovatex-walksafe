@@ -1,0 +1,35 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+<Layout title="FAQ | WalkSafe">
+    <div class="max-w-xl mx-auto px-4 py-8 md:py-12 min-h-[calc(100vh-3.5rem)] flex flex-col justify-center">
+        <a href="/" class="text-sm font-semibold text-emerald-600 dark:text-[#00A8A8] flex items-center gap-1 mb-6 hover:text-emerald-700 w-fit transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Back to Home
+        </a>
+
+        <div class="bg-white dark:bg-[#1C1C1E] rounded-3xl border border-slate-200 dark:border-slate-700/50 shadow-xl p-6 md:p-8">
+            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-[#F7FAFC] mb-6 flex items-center gap-3">
+                <svg class="w-7 h-7 text-emerald-600 dark:text-[#00A8A8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                Frequently Asked Questions
+            </h1>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-[#F7FAFC] mb-1">How does WalkSafe calculate exposure?</h3>
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed">[Answer placeholder: WalkSafe cross-references real-time API AQI data with OpenStreetMap topological constraints to model pedestrian exposure.]</p>
+                </div>
+                <div class="border-t border-slate-100 dark:border-slate-700/50"></div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-[#F7FAFC] mb-1">Where does the air quality data come from?</h3>
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed">[Answer placeholder: Our data pipeline aggregates local municipal sensors, satellite modeling, and crowdsourced hazard pins.]</p>
+                </div>
+                <div class="border-t border-slate-100 dark:border-slate-700/50"></div>
+                <div>
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-[#F7FAFC] mb-1">Is WalkSafe available globally?</h3>
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 leading-relaxed">[Answer placeholder: Yes. The routing engine utilizes global OSM vectors, adapting dynamically to any municipal grid.]</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>

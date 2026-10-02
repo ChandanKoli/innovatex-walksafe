@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+/* --- Clean Air Tech: Dark Mode Overrides --- */
+html.dark body, html.dark {
+    background-color: #0B1F3A !important; /* Deep Navy Base */
+    color: #F7FAFC !important; /* Off-White Text */
+}
+
+/* Card & Surface Intercepts */
+html.dark .bg-white {
+    background-color: #1C1C1E !important; /* Charcoal Cards */
+}
+html.dark .bg-slate-50, html.dark .bg-slate-100 {
+    background-color: #0B1F3A !important;
+}
+
+/* Brand Color Intercepts (Emerald -> Clean Teal) */
+html.dark .bg-emerald-600 {
+    background-color: #00A8A8 !important; 
+}
+html.dark .text-emerald-600, html.dark svg.text-emerald-600 {
+    color: #00A8A8 !important;
+}
+
+/* Typography & Border Intercepts */
+html.dark .text-slate-900, html.dark .text-slate-800 {
+    color: #F7FAFC !important;
+}
+html.dark .text-slate-500, html.dark .text-slate-400 {
+    color: #94a3b8 !important; 
+}
+html.dark .border-slate-200, html.dark .border-slate-100 {
+    border-color: #334155 !important;
+}
+
+/* Specific Accent Buttons */
+html.dark .bg-emerald-50 {
+    background-color: rgba(0, 168, 168, 0.15) !important;
+    color: #00A8A8 !important;
+    border-color: rgba(0, 168, 168, 0.3) !important;
+}
+
+/* --- Clean Air Tech: Dark Mode Overrides --- */
+html.dark body, html.dark {
+    background-color: #0B1F3A !important;
+    color: #F7FAFC !important;
+}
+html.dark .bg-white { background-color: #1C1C1E !important; }
+html.dark .bg-slate-50, html.dark .bg-slate-100 { background-color: #0B1F3A !important; }
+html.dark .bg-emerald-600 { background-color: #00A8A8 !important; }
+html.dark .text-emerald-600, html.dark svg.text-emerald-600 { color: #00A8A8 !important; }
+html.dark .text-slate-900, html.dark .text-slate-800 { color: #F7FAFC !important; }
+html.dark .text-slate-500, html.dark .text-slate-400 { color: #94a3b8 !important; }
+html.dark .border-slate-200, html.dark .border-slate-100 { border-color: #334155 !important; }
+html.dark .bg-emerald-50 {
+    background-color: rgba(0, 168, 168, 0.15) !important;
+    color: #00A8A8 !important;
+    border-color: rgba(0, 168, 168, 0.3) !important;
+}
