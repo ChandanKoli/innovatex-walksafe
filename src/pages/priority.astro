@@ -1,178 +1,101 @@
 ---
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
 ---
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Priorities — WalkSafe</title>
-    <style>
-        input[type=range] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 24px;
-            width: 24px;
-            border-radius: 50%;
-            background: #059669; /* emerald-600 */
-            cursor: pointer;
-            margin-top: -8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        input[type=range]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 8px;
-            cursor: pointer;
-            background: #e2e8f0; /* slate-200 */
-            border-radius: 4px;
-        }
-        input[type=range]:focus {
-            outline: none;
-        }
-    </style>
-</head>
-<body class="bg-slate-50 text-slate-900 font-sans min-h-screen flex flex-col antialiased">
-    <!-- Top Bar -->
-    <header class="bg-emerald-600 text-white p-4 shadow-sm sticky top-0 z-10">
-        <div class="max-w-xl mx-auto flex items-center justify-between">
-            <a href="/menu" class="text-emerald-50 hover:text-white font-medium flex items-center gap-1 transition">
-                <span>&larr;</span> <span class="hidden sm:inline">Back</span>
-            </a>
-            <h1 class="text-lg font-bold">Hazard Priority Intensity</h1>
-            <div class="w-12"></div> <!-- Spacer -->
-        </div>
-    </header>
+<Layout title="Hazard Priorities | WalkSafe">
+    <div class="max-w-xl mx-auto px-4 py-8 md:py-12 min-h-[calc(100vh-3.5rem)] flex flex-col justify-center">
+        <a href="/" class="text-sm font-semibold text-emerald-600 flex items-center gap-1 mb-6 hover:text-emerald-700 w-fit transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Back to Home
+        </a>
 
-    <main class="flex-grow p-4 relative">
-        <div class="max-w-xl mx-auto my-8 bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col gap-6">
-            <p class="text-slate-600 leading-relaxed text-sm sm:text-base">
-                Calibrate how aggressively Walksafe routes bypass specific micro-hazards. Values range from 1 (Standard) to 4 (Critical Avoidance).
-            </p>
-
-            <form id="priority-form" class="flex flex-col gap-6 mt-2">
-                <!-- Slider 1 -->
-                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
-                    <div class="flex justify-between items-center">
-                        <label for="dust" class="font-semibold text-slate-800">🚧 Active Road Dust & Excavation <span class="block text-xs font-normal text-slate-500">(Fugitive PM10)</span></label>
-                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="dust-val">3</span>
-                    </div>
-                    <input type="range" id="dust" name="dust" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('dust-val').innerText = this.value" />
-                    <div class="flex justify-between text-xs text-slate-400 px-1">
-                        <span>1</span><span>2</span><span>3</span><span>4</span>
-                    </div>
-                </div>
-
-                <!-- Slider 2 -->
-                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
-                    <div class="flex justify-between items-center">
-                        <label for="odor" class="font-semibold text-slate-800">🤢 Unusual Drain & Waste Odor <span class="block text-xs font-normal text-slate-500">(VOCs / Sewage gas)</span></label>
-                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="odor-val">3</span>
-                    </div>
-                    <input type="range" id="odor" name="odor" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('odor-val').innerText = this.value" />
-                    <div class="flex justify-between text-xs text-slate-400 px-1">
-                        <span>1</span><span>2</span><span>3</span><span>4</span>
-                    </div>
-                </div>
-
-                <!-- Slider 3 -->
-                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
-                    <div class="flex justify-between items-center">
-                        <label for="smog" class="font-semibold text-slate-800">🔥 Smog & Open Burning <span class="block text-xs font-normal text-slate-500">(Black Carbon / Smoke)</span></label>
-                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="smog-val">3</span>
-                    </div>
-                    <input type="range" id="smog" name="smog" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('smog-val').innerText = this.value" />
-                    <div class="flex justify-between text-xs text-slate-400 px-1">
-                        <span>1</span><span>2</span><span>3</span><span>4</span>
-                    </div>
-                </div>
-
-                <!-- Slider 4 -->
-                <div class="flex flex-col gap-3 p-4 rounded-2xl border border-slate-100 bg-slate-50">
-                    <div class="flex justify-between items-center">
-                        <label for="idling" class="font-semibold text-slate-800">🚗💨 Engine Halt & Transit Idling <span class="block text-xs font-normal text-slate-500">(Tailpipe NOx & Soot)</span></label>
-                        <span class="bg-white border border-slate-200 text-emerald-700 font-bold w-8 h-8 rounded-full flex items-center justify-center shadow-sm" id="idling-val">3</span>
-                    </div>
-                    <input type="range" id="idling" name="idling" min="1" max="4" step="1" value="3" class="w-full" oninput="document.getElementById('idling-val').innerText = this.value" />
-                    <div class="flex justify-between text-xs text-slate-400 px-1">
-                        <span>1</span><span>2</span><span>3</span><span>4</span>
-                    </div>
-                </div>
-
-                <!-- Action Button -->
-                <button type="submit" class="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-6 rounded-2xl w-full text-center transition">
-                    Save Routing Weights
-                </button>
-            </form>
-        </div>
-
-        <!-- Notification Banner -->
-        <div id="banner" class="fixed top-20 left-1/2 -translate-x-1/2 bg-emerald-600 text-white px-6 py-3 rounded-xl shadow-lg font-medium transition-all duration-300 opacity-0 pointer-events-none -translate-y-4">
-            Routing weights saved!
-        </div>
-    </main>
-
-    <script is:inline>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('priority-form');
-            const banner = document.getElementById('banner');
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 md:p-8">
+            <h1 class="text-2xl font-extrabold text-slate-900 mb-2 flex items-center gap-3">
+                <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+                Hazard Priorities
+            </h1>
+            <p class="text-sm text-slate-500 mb-6">Set your avoidance intensity from 1 (Standard) to 4 (Critical).</p>
             
-            const inputs = {
-                dust: document.getElementById('dust'),
-                odor: document.getElementById('odor'),
-                smog: document.getElementById('smog'),
-                idling: document.getElementById('idling')
-            };
+            <div class="space-y-4">
+                <!-- Dust -->
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-amber-100 p-2 rounded-lg text-amber-600">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Active Road Dust</h3>
+                            <p class="text-[11px] text-slate-500">Fugitive PM10 & Excavation</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 bg-white border border-slate-200 p-1 rounded-lg">
+                        <button class="w-8 h-8 rounded text-sm font-semibold bg-amber-50 text-amber-700 border border-amber-200">1</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">2</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">3</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">4</button>
+                    </div>
+                </div>
+
+                <!-- Odor -->
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-teal-100 p-2 rounded-lg text-teal-600">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Drain & Waste Odor</h3>
+                            <p class="text-[11px] text-slate-500">VOCs / Sewage gas</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 bg-white border border-slate-200 p-1 rounded-lg">
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">1</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">2</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold bg-teal-50 text-teal-700 border border-teal-200">3</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">4</button>
+                    </div>
+                </div>
+
+                <!-- Smog -->
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-orange-100 p-2 rounded-lg text-orange-600">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Smog & Burning</h3>
+                            <p class="text-[11px] text-slate-500">Black Carbon / Smoke</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 bg-white border border-slate-200 p-1 rounded-lg">
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">1</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold bg-orange-50 text-orange-700 border border-orange-200">2</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">3</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">4</button>
+                    </div>
+                </div>
+
+                <!-- Idling -->
+                <div class="bg-slate-50 border border-slate-100 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-red-100 p-2 rounded-lg text-red-600">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-800">Transit Idling</h3>
+                            <p class="text-[11px] text-slate-500">Tailpipe NOx & Soot</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-1 bg-white border border-slate-200 p-1 rounded-lg">
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">1</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold bg-red-50 text-red-700 border border-red-200">2</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">3</button>
+                        <button class="w-8 h-8 rounded text-sm font-semibold text-slate-400 hover:bg-slate-50 transition">4</button>
+                    </div>
+                </div>
+            </div>
             
-            const labels = {
-                dust: document.getElementById('dust-val'),
-                odor: document.getElementById('odor-val'),
-                smog: document.getElementById('smog-val'),
-                idling: document.getElementById('idling-val')
-            };
-
-            // Load from localStorage
-            const savedData = localStorage.getItem('walksafe_priorities');
-            if (savedData) {
-                try {
-                    const priorities = JSON.parse(savedData);
-                    for (const [key, val] of Object.entries(priorities)) {
-                        if (inputs[key]) {
-                            inputs[key].value = val;
-                            labels[key].innerText = val;
-                        }
-                    }
-                } catch (e) {
-                    console.error('Error parsing priority data', e);
-                }
-            }
-
-            // Save to localStorage
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const priorities = {
-                    dust: inputs.dust.value,
-                    odor: inputs.odor.value,
-                    smog: inputs.smog.value,
-                    idling: inputs.idling.value
-                };
-
-                localStorage.setItem('walksafe_priorities', JSON.stringify(priorities));
-
-                // Show banner
-                banner.classList.remove('opacity-0', '-translate-y-4');
-                banner.classList.add('opacity-100', 'translate-y-0');
-                
-                setTimeout(() => {
-                    banner.classList.remove('opacity-100', 'translate-y-0');
-                    banner.classList.add('opacity-0', '-translate-y-4');
-                }, 3000);
-            });
-        });
-    </script>
-</body>
-</html>
+            <button class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-sm transition mt-6">
+                Save Priorities
+            </button>
+        </div>
+    </div>
+</Layout>
