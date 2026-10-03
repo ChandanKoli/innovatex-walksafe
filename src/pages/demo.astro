@@ -32,13 +32,13 @@ import Layout from '../layouts/Layout.astro';
         .leaflet-tooltip { color: #0f172a !important; }
     </style>
     
-    <div class="relative w-full h-[calc(100vh-3.5rem)] bg-slate-100 dark:bg-slate-900 overflow-hidden">
+    <div class="relative w-full h-[calc(100vh-4rem)] bg-slate-100 dark:bg-slate-900 overflow-hidden">
         <div id="demo-map" class="absolute top-0 h-[50vh] sm:h-[70vh] md:h-full w-full z-0 bg-slate-50 dark:bg-slate-900"></div>
 
-        <div class="absolute bottom-0 w-full z-[1000] pointer-events-none p-4 sm:p-6 sm:inset-0 flex flex-col sm:flex-row sm:justify-between max-h-[50vh] sm:max-h-none overflow-y-auto sm:overflow-visible gap-4 sm:gap-0">
+        <div class="absolute bottom-0 md:inset-0 w-full z-[1000] pointer-events-none p-4 md:p-0 flex flex-col max-h-[50vh] md:max-h-none overflow-y-auto md:overflow-visible gap-4">
             <!-- Top Left Card -->
-            <div class="w-full sm:w-80 flex flex-col gap-4 pointer-events-auto">
-                <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-3xl border border-slate-200 dark:border-slate-700 shadow-2xl p-5 transition-all">
+            <div class="w-full md:absolute md:top-4 md:left-4 z-[400] md:w-96 flex flex-col gap-4 pointer-events-auto">
+                <div class="backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 shadow-xl rounded-xl p-5 md:p-6 transition-all">
                     <div class="flex items-center justify-between w-full">
                         <h2 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Route Trade-Off
@@ -48,7 +48,7 @@ import Layout from '../layouts/Layout.astro';
                     
                     <div class="card-body mt-4 transition-all">
                         <div class="flex flex-col gap-2 mb-4">
-                            <div class="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2">
+                            <div class="flex items-center bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 rounded-xl px-3 py-2">
                                 <span class="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 w-12 tracking-wider">FROM</span>
                                 <select id="origin-select" class="flex-1 bg-transparent text-sm font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer">
                                     <option value="none" selected disabled class="dark:bg-slate-900">Select Origin...</option>
@@ -58,7 +58,7 @@ import Layout from '../layouts/Layout.astro';
                                     <option value="nodeD" class="dark:bg-slate-900">Node D (Bus Depot)</option>
                                 </select>
                             </div>
-                            <div class="flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-xl px-3 py-2">
+                            <div class="flex items-center bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 rounded-xl px-3 py-2">
                                 <span class="text-[10px] font-extrabold text-slate-400 dark:text-slate-500 w-12 tracking-wider">TO</span>
                                 <select id="dest-select" class="flex-1 bg-transparent text-sm font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer">
                                     <option value="none" selected disabled class="dark:bg-slate-900">Select Destination...</option>
@@ -100,8 +100,8 @@ import Layout from '../layouts/Layout.astro';
             </div>
 
             <!-- Hazard Menu -->
-            <div class="w-full sm:w-auto sm:self-end pointer-events-auto">
-                <div class="bg-white/95 dark:bg-slate-800/95 backdrop-blur-md rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-5 w-full sm:w-[360px] transition-all">
+            <div class="w-full sm:w-auto sm:self-end md:absolute md:bottom-8 md:right-4 z-[400] md:w-80 pointer-events-auto mt-auto">
+                <div class="backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-700 shadow-xl rounded-xl p-5 md:p-6 w-full sm:w-[360px] md:w-full transition-all">
                     <div class="flex items-center justify-between w-full mb-3">
                         <h3 class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
                             <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
