@@ -126,7 +126,7 @@ import '../styles/global.css';
             findRouteBtn?.addEventListener('click', () => {
                 const from = encodeURIComponent(originInput.value || 'station');
                 const to = encodeURIComponent(destInput.value || 'college');
-                window.location.href = `/demo?from=${from}&to=${to}`;
+                window.location.href = `/pin?from=${from}&to=${to}`;
             });
         });
     </script>

@@ -29,8 +29,11 @@ const { title } = Astro.props;
         </div>
         <div class="flex items-center gap-3 md:gap-4">
             <!-- Restored Header Dark Mode Toggle -->
-            <button id="theme-toggle" class="text-white hover:text-emerald-200 transition p-1" aria-label="Toggle Dark Mode">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+            <button id="theme-toggle" class="text-white hover:text-emerald-200 transition p-1 flex items-center justify-center w-8 h-8" aria-label="Toggle Dark Mode">
+                <!-- Moon Icon (Shows in Light Mode) -->
+                <svg id="icon-moon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                <!-- Sun Icon (Shows in Dark Mode, hidden by default) -->
+                <svg id="icon-sun" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
             </button>
             <a href="/demo" class="bg-white text-emerald-800 font-bold px-3 py-1 rounded-xl text-xs md:text-sm shadow-sm hover:bg-emerald-50 transition">Demo</a>
             <button id="menu-btn" class="text-white hover:text-emerald-100 transition">
@@ -104,13 +107,22 @@ const { title } = Astro.props;
             if(backdrop) backdrop.addEventListener('click', closeDrawer);
 
             if(themeToggle) {
+                const iconMoon = document.getElementById('icon-moon');
+                const iconSun = document.getElementById('icon-sun');
+                const updateIcons = () => {
+                    if(document.documentElement.classList.contains('dark')) {
+                        iconMoon.classList.add('hidden');
+                        iconSun.classList.remove('hidden');
+                    } else {
+                        iconSun.classList.add('hidden');
+                        iconMoon.classList.remove('hidden');
+                    }
+                };
+                updateIcons(); // Run on load
                 themeToggle.addEventListener('click', () => {
                     document.documentElement.classList.toggle('dark');
-                    if(document.documentElement.classList.contains('dark')) {
-                        localStorage.setItem('theme', 'dark');
-                    } else {
-                        localStorage.setItem('theme', 'light');
-                    }
+                    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                    updateIcons();
                 });
             }
         });

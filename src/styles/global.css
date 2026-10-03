@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
-/* --- Clean Air Tech: Dark Mode Overrides --- */
+/* --- Clean Air Tech: Dark Mode Overrides (Refined) --- */
 html.dark body, html.dark {
-    background-color: #0B1F3A !important; /* Deep Navy Base */
-    color: #F7FAFC !important; /* Off-White Text */
+    background-color: #0d1117 !important; /* Deep neutral dark instead of blue-tinted */
+    color: #F7FAFC !important;
 }
-
-/* Card & Surface Intercepts */
 html.dark .bg-white {
-    background-color: #1C1C1E !important; /* Charcoal Cards */
+    background-color: #161b22 !important; /* Sleek charcoal card background */
 }
 html.dark .bg-slate-50, html.dark .bg-slate-100 {
-    background-color: #0B1F3A !important;
+    background-color: #0d1117 !important;
+}
+html.dark .border-slate-200, html.dark .border-slate-100 {
+    border-color: #30363d !important; /* Muted borders to prevent clashing */
 }
 
-/* Brand Color Intercepts (Emerald -> Clean Teal) */
+/* Keep the Teal/Emerald accents as they are for the buttons */
 html.dark .bg-emerald-600 {
     background-color: #00A8A8 !important; 
 }
@@ -29,9 +30,6 @@ html.dark .text-slate-900, html.dark .text-slate-800 {
 html.dark .text-slate-500, html.dark .text-slate-400 {
     color: #94a3b8 !important; 
 }
-html.dark .border-slate-200, html.dark .border-slate-100 {
-    border-color: #334155 !important;
-}
 
 /* Specific Accent Buttons */
 html.dark .bg-emerald-50 {
@@ -40,20 +38,13 @@ html.dark .bg-emerald-50 {
     border-color: rgba(0, 168, 168, 0.3) !important;
 }
 
-/* --- Clean Air Tech: Dark Mode Overrides --- */
-html.dark body, html.dark {
-    background-color: #0B1F3A !important;
-    color: #F7FAFC !important;
+/* Ensure Header Demo Button pops in Dark Mode */
+html.dark header a[href="/demo"] {
+    background-color: #F7FAFC !important; /* Off-White */
+    color: #0d1117 !important; /* Deep Dark Text for high contrast */
+    border: none !important;
 }
-html.dark .bg-white { background-color: #1C1C1E !important; }
-html.dark .bg-slate-50, html.dark .bg-slate-100 { background-color: #0B1F3A !important; }
-html.dark .bg-emerald-600 { background-color: #00A8A8 !important; }
-html.dark .text-emerald-600, html.dark svg.text-emerald-600 { color: #00A8A8 !important; }
-html.dark .text-slate-900, html.dark .text-slate-800 { color: #F7FAFC !important; }
-html.dark .text-slate-500, html.dark .text-slate-400 { color: #94a3b8 !important; }
-html.dark .border-slate-200, html.dark .border-slate-100 { border-color: #334155 !important; }
-html.dark .bg-emerald-50 {
-    background-color: rgba(0, 168, 168, 0.15) !important;
-    color: #00A8A8 !important;
-    border-color: rgba(0, 168, 168, 0.3) !important;
+
+html.dark header a[href="/demo"]:hover {
+    background-color: #e2e8f0 !important; /* Slight dim on hover */
 }

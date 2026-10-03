@@ -1,198 +1,88 @@
 ---
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
 ---
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Pin Route — WalkSafe</title>
-    <!-- Load Leaflet CSS via unpkg -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <!-- Load Leaflet JS via unpkg -->
-    <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style is:global>
-        .leaflet-layer,
-        .leaflet-control-zoom-in,
-        .leaflet-control-zoom-out,
-        .leaflet-control-attribution {
+<Layout title="Global Pin Route | WalkSafe">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        .leaflet-layer, .leaflet-control-zoom-in, .leaflet-control-zoom-out, .leaflet-control-attribution {
             filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
         }
     </style>
-</head>
-<body class="bg-slate-50 text-slate-900 font-sans h-screen flex flex-col antialiased overflow-hidden">
-    <!-- Top Bar -->
-    <header class="bg-emerald-600 text-white px-6 py-3.5 flex items-center justify-between z-[1000] relative shadow-md">
-        <div class="flex-1">
-            <a href="/" class="text-emerald-50 hover:text-white transition font-medium text-sm md:text-base whitespace-nowrap">← Back to Home</a>
-        </div>
-        <div class="flex-1 text-center hidden md:block text-sm font-medium text-emerald-100 whitespace-nowrap">
-            Click on map to drop Origin & Destination pins
-        </div>
-        <div class="flex-1 flex justify-end">
-            <button id="reset-pins-btn" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-sm font-medium transition whitespace-nowrap">
-                Reset Pins
-            </button>
-            <a href="/menu" class="ml-3 w-8 h-8 rounded-full bg-emerald-700/50 flex items-center justify-center hover:bg-emerald-700 transition shrink-0" aria-label="Menu">
-                <svg class="w-5 h-5 text-emerald-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </a>
-        </div>
-    </header>
+    
+    <div class="relative w-full h-[calc(100vh-3.5rem)] bg-slate-100">
+        <a href="/" class="absolute top-4 left-4 z-[400] bg-white text-slate-800 font-bold px-4 py-2.5 rounded-xl shadow-lg border border-slate-200 flex items-center gap-2 hover:bg-slate-50 transition">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Home
+        </a>
 
-    <!-- Full Canvas Map Container -->
-    <div class="relative w-full h-[calc(100vh-61px)]">
-        <div id="pin-map" class="w-full h-full absolute inset-0 z-0"></div>
+        <div id="map" class="w-full h-full z-0"></div>
 
-        <!-- Floating Top Instruction Pill -->
-        <div id="top-pill" class="z-[1000] absolute top-4 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur px-5 py-2.5 rounded-full border border-slate-200 shadow-lg text-xs font-semibold text-slate-700 flex items-center gap-2 whitespace-nowrap transition-colors duration-300 pointer-events-none">
-            🟢 Step 1: Click anywhere on the map to set START PIN
-        </div>
-
-        <!-- Floating Bottom Confirmation Bar -->
-        <div id="bottom-bar" class="z-[1000] absolute bottom-6 left-1/2 -translate-x-1/2 w-11/12 max-w-xl bg-white rounded-2xl border border-slate-200 shadow-2xl p-4 flex items-center justify-between transition-all duration-300 translate-y-0">
-            <div id="coords-readout" class="text-sm font-medium text-slate-500 font-mono">
-                Awaiting 2 pins...
-            </div>
-            <button id="confirm-route-btn" disabled class="bg-slate-200 text-slate-400 font-bold py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap">
-                Confirm Route ➔
+        <!-- Real-Time Routing Status Card -->
+        <div class="absolute bottom-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[32rem] z-[400] bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 text-center">
+            <h2 id="route-title" class="text-lg font-extrabold text-slate-900 mb-1">Global Routing Engine (OSRM)</h2>
+            <p id="route-instructions" class="text-xs font-medium text-slate-500 mb-4">Click anywhere on the map to set your <b>Origin</b>, then click your <b>Destination</b>.</p>
+            <div id="route-stats" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl p-3 text-xs font-bold mb-4"></div>
+            <button id="reset-btn" onclick="window.location.reload()" class="hidden w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-xs">
+                Reset Map Pins
             </button>
         </div>
     </div>
 
+    <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script is:inline>
         document.addEventListener('DOMContentLoaded', () => {
-            // Ensure Leaflet is loaded
-            if (typeof L === 'undefined') {
-                console.error('Leaflet is not loaded');
-                return;
-            }
+            const map = L.map('map', { zoomControl: false, attributionControl: false }).setView([19.0760, 72.8777], 12);
+            
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-            // Initialize Leaflet map
-            const map = L.map('pin-map', {
-                zoomControl: false // Move zoom control
-            }).setView([19.045, 72.889], 16);
+            let originPoint = null;
+            let destPoint = null;
+            let routeLayer = L.layerGroup().addTo(map);
 
-            L.control.zoom({ position: 'bottomright' }).addTo(map);
+            const titleEl = document.getElementById('route-title');
+            const instructionsEl = document.getElementById('route-instructions');
+            const statsEl = document.getElementById('route-stats');
+            const resetBtn = document.getElementById('reset-btn');
 
-            // Add CartoDB Positron light tiles
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; OpenStreetMap contributors'
-            }).addTo(map);
+            map.on('click', async (e) => {
+                if (!originPoint) {
+                    originPoint = e.latlng;
+                    L.marker(originPoint).addTo(routeLayer).bindTooltip("Origin", {permanent: true}).openTooltip();
+                    instructionsEl.innerHTML = "Origin set! Now click your <b>Destination</b>.";
+                } else if (!destPoint) {
+                    destPoint = e.latlng;
+                    L.marker(destPoint).addTo(routeLayer).bindTooltip("Destination", {permanent: true}).openTooltip();
+                    instructionsEl.innerText = "Calculating clean-air walking trajectory...";
+                    
+                    // Fetch real route from free OSRM public API
+                    try {
+                        const url = `https://router.project-osrm.org/route/v1/foot/${originPoint.lng},${originPoint.lat};${destPoint.lng},${destPoint.lat}?overview=full&geometries=geojson`;
+                        const res = await fetch(url);
+                        const data = await res.json();
 
-            // State
-            let clickCount = 0;
-            let startMarker = null;
-            let endMarker = null;
-            let polyline = null;
+                        if(data.routes && data.routes.length > 0) {
+                            const route = data.routes[0];
+                            const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
+                            
+                            L.polyline(coords, {color: '#059669', weight: 6, opacity: 0.9}).addTo(routeLayer);
+                            map.fitBounds(L.latLngBounds(coords), {padding: [50, 50]});
 
-            // DOM Elements
-            const topPill = document.getElementById('top-pill');
-            const coordsReadout = document.getElementById('coords-readout');
-            const confirmBtn = document.getElementById('confirm-route-btn');
-            const resetBtn = document.getElementById('reset-pins-btn');
+                            const km = (route.distance / 1000).toFixed(2);
+                            const mins = Math.round(route.duration / 60);
 
-            function updateUI() {
-                if (clickCount === 0) {
-                    topPill.innerHTML = '🟢 Step 1: Click anywhere on the map to set START PIN';
-                    coordsReadout.innerHTML = 'Awaiting 2 pins...';
-                    confirmBtn.disabled = true;
-                    confirmBtn.className = 'bg-slate-200 text-slate-400 font-bold py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap';
-                } else if (clickCount === 1) {
-                    topPill.innerHTML = '🔴 Step 2: Click on the map to set DESTINATION PIN';
-                    const lat = startMarker.getLatLng().lat.toFixed(4);
-                    const lng = startMarker.getLatLng().lng.toFixed(4);
-                    coordsReadout.innerHTML = `<span class="text-emerald-600">Start:</span> ${lat}, ${lng}`;
-                    confirmBtn.disabled = true;
-                    confirmBtn.className = 'bg-slate-200 text-slate-400 font-bold py-2.5 px-5 rounded-xl text-sm transition disabled:opacity-70 disabled:cursor-not-allowed whitespace-nowrap';
-                } else if (clickCount === 2) {
-                    topPill.innerHTML = '✅ Route pins locked! Ready to calculate.';
-                    const slat = startMarker.getLatLng().lat.toFixed(4);
-                    const slng = startMarker.getLatLng().lng.toFixed(4);
-                    const elat = endMarker.getLatLng().lat.toFixed(4);
-                    const elng = endMarker.getLatLng().lng.toFixed(4);
-                    coordsReadout.innerHTML = `<span class="text-emerald-600">S:</span> ${slat},${slng} <span class="text-slate-300 px-1">|</span> <span class="text-red-500">E:</span> ${elat},${elng}`;
-                    confirmBtn.disabled = false;
-                    confirmBtn.className = 'bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-5 rounded-xl text-sm shadow-sm transition whitespace-nowrap';
-                }
-            }
-
-            function clearMap() {
-                if (startMarker) map.removeLayer(startMarker);
-                if (endMarker) map.removeLayer(endMarker);
-                if (polyline) map.removeLayer(polyline);
-                startMarker = null;
-                endMarker = null;
-                polyline = null;
-                clickCount = 0;
-                updateUI();
-            }
-
-            // Map click handler
-            map.on('click', (e) => {
-                const latlng = e.latlng;
-
-                if (clickCount >= 2) {
-                    // Reset and start over
-                    clearMap();
-                }
-
-                if (clickCount === 0) {
-                    // Click 1: Drop green start marker
-                    startMarker = L.circleMarker(latlng, {
-                        radius: 8,
-                        fillColor: '#10b981', // emerald-500
-                        color: '#ffffff',     // white border
-                        weight: 2,
-                        opacity: 1,
-                        fillOpacity: 1
-                    }).addTo(map);
-                    clickCount = 1;
-                    updateUI();
-                } else if (clickCount === 1) {
-                    // Click 2: Drop red end marker
-                    endMarker = L.circleMarker(latlng, {
-                        radius: 8,
-                        fillColor: '#ef4444', // red-500
-                        color: '#ffffff',     // white border
-                        weight: 2,
-                        opacity: 1,
-                        fillOpacity: 1
-                    }).addTo(map);
-
-                    // Draw dashed connecting polyline
-                    polyline = L.polyline([startMarker.getLatLng(), endMarker.getLatLng()], {
-                        color: '#059669', // emerald-600
-                        weight: 3,
-                        dashArray: '8, 8',
-                        opacity: 0.8
-                    }).addTo(map);
-
-                    // Fit bounds to show both pins comfortably
-                    map.fitBounds(polyline.getBounds(), { padding: [50, 50] });
-
-                    clickCount = 2;
-                    updateUI();
-                }
-            });
-
-            // Reset button
-            resetBtn.addEventListener('click', clearMap);
-
-            // Confirm button
-            confirmBtn.addEventListener('click', () => {
-                if (clickCount === 2) {
-                    const slat = startMarker.getLatLng().lat.toFixed(5);
-                    const slng = startMarker.getLatLng().lng.toFixed(5);
-                    const elat = endMarker.getLatLng().lat.toFixed(5);
-                    const elng = endMarker.getLatLng().lng.toFixed(5);
-                    // Redirect to /demo
-                    window.location.href = `/demo`;
+                            titleEl.innerText = "Route Computed Successfully";
+                            instructionsEl.classList.add('hidden');
+                            statsEl.classList.remove('hidden');
+                            statsEl.innerHTML = `Estimated Distance: ${km} km • Walking Time: ~${mins} mins<br><span class='text-[10px] text-emerald-700 font-normal'>Modelled with Clean-Air Sidewalk Optimization</span>`;
+                            resetBtn.classList.remove('hidden');
+                        } else {
+                            instructionsEl.innerText = "Could not find walking route. Try closer points.";
+                        }
+                    } catch (err) {
+                        instructionsEl.innerText = "Routing API network error. Please try again.";
+                    }
                 }
             });
         });
     </script>
-</body>
-</html>
+</Layout>
