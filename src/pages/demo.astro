@@ -177,9 +177,9 @@ import Layout from '../layouts/Layout.astro';
             let directRouteLayer = L.layerGroup().addTo(map);
 
             const waypoints = {
-                "nodeA-nodeB": [19.0720, 72.9940], "nodeA-nodeC": [19.0690, 73.0010],
-                "nodeA-nodeD": [19.0680, 72.9920], "nodeB-nodeC": [19.0780, 72.9980],
-                "nodeB-nodeD": [19.0770, 72.9920], "nodeC-nodeD": [19.0750, 72.9950]
+                "nodeA-nodeB": [19.0720, 72.9940],
+                "nodeA-nodeD": [19.0680, 72.9920], "nodeB-nodeC": [19.0756, 72.9977],
+                "nodeB-nodeD": [19.0770, 72.9920], "nodeC-nodeD": [19.0745, 72.9981]
             };
 
             const getMidpoint = (orig, dest) => {
@@ -248,8 +248,24 @@ import Layout from '../layouts/Layout.astro';
                 document.getElementById('stat-exposure').innerText = "-42% Dust Exposure";
 
                 const midPoint = getMidpoint(orig, dest);
-                const cleanCoords = await fetchOSRM([nodes[orig], midPoint, nodes[dest]]);
-                const directCoords = await fetchOSRM([nodes[orig], nodes[dest]]);
+                let cleanCoords = await fetchOSRM([nodes[orig], midPoint, nodes[dest]]);
+                let directCoords = await fetchOSRM([nodes[orig], nodes[dest]]);
+
+                if ((orig === 'nodeC' && dest === 'nodeA') || (orig === 'nodeA' && dest === 'nodeC')) {
+                    const customRoute = [
+                        [19.0735, 72.9985], // Node C (Galleria 17)
+                        [19.0725, 72.9984], // Tracing south
+                        [19.0710, 72.9982], // Swami Pranavanandji Marg
+                        [19.0690, 72.9980], // Crosses squarely under Vashi Flyover
+                        [19.0675, 72.9978], // Natural curve begins
+                        [19.0665, 72.9976], // Mid-curve
+                        [19.0655, 72.9973], // Station Approach
+                        [19.0650, 72.9971], // Station queue
+                        [19.0645, 72.9972]  // Node A (Station)
+                    ];
+                    cleanCoords = orig === 'nodeC' ? customRoute : [...customRoute].reverse();
+                    directCoords = [nodes[orig], nodes[dest]];
+                }
 
                 const dist = (L.latLng(nodes[orig]).distanceTo(L.latLng(nodes[dest])) / 1000).toFixed(1);
                 document.getElementById('stat-time-dist').innerText = `~${Math.round(dist * 12 + 4)} mins • ${dist}km`;
@@ -305,6 +321,88 @@ import Layout from '../layouts/Layout.astro';
                         direction: 'right',
                         className: 'bg-white/95 backdrop-blur-sm text-emerald-800 font-bold border border-emerald-200 shadow-xl rounded-lg text-[11px] px-3 py-2'
                     }).openTooltip();
+                }
+
+                if (orig === 'nodeD' || dest === 'nodeD' || (orig === 'nodeC' && dest === 'nodeB') || (orig === 'nodeB' && dest === 'nodeC')) {
+                    const engineHaltSegment = [
+                        [19.074776, 72.99778],
+                        [19.075508, 72.997848],
+                        [19.075587, 72.997855]
+                    ];
+
+                    const haltLine = L.polyline(engineHaltSegment, {
+                        color: '#ef4444',
+                        weight: 8,
+                        opacity: 0.95,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                    }).addTo(cleanRouteLayer);
+
+                    haltLine.bindTooltip(
+                        `<div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+                            <span>Engine Halt: Bus Depot</span>
+                        </div>`,
+                        {
+                            permanent: true, 
+                            direction: 'right',
+                            offset: [5, 0],
+                            className: '!bg-white/95 !backdrop-blur-sm !border !border-red-200 !shadow-xl !rounded-xl !text-slate-800 !font-bold !text-[11px] !px-3 !py-2'
+                        }
+                    ).openTooltip();
+                }
+
+                if ((orig === 'nodeC' && dest === 'nodeB') || (orig === 'nodeB' && dest === 'nodeC')) {
+                    const dustDot = L.circleMarker([19.076882, 72.996713], {
+                        radius: 7,
+                        color: '#fff',
+                        weight: 2,
+                        fillColor: '#f97316',
+                        fillOpacity: 1
+                    }).addTo(cleanRouteLayer);
+
+                    dustDot.bindTooltip(
+                        `<div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.8)]"></div>
+                            <span>Dust: Unpaved Shoulder</span>
+                        </div>`,
+                        {
+                            permanent: true, 
+                            direction: 'top',
+                            offset: [0, -10],
+                            className: '!bg-white/95 !backdrop-blur-sm !border !border-orange-200 !shadow-xl !rounded-xl !text-slate-900 !text-[13px] !font-bold !py-2 !px-3'
+                        }
+                    ).openTooltip();
+                }
+
+                if (orig === 'nodeA' || dest === 'nodeA') {
+                    const stationHaltSegment = [
+                        [19.0665, 72.9976],
+                        [19.0655, 72.9973],
+                        [19.0650, 72.9971],
+                        [19.0645, 72.9972]
+                    ];
+
+                    const stationHaltLine = L.polyline(stationHaltSegment, {
+                        color: '#ef4444',
+                        weight: 8,
+                        opacity: 0.95,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                    }).addTo(cleanRouteLayer);
+
+                    stationHaltLine.bindTooltip(
+                        `<div class="flex items-center gap-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]"></div>
+                            <span>Engine Halt: Station Transit</span>
+                        </div>`,
+                        {
+                            permanent: true, 
+                            direction: 'right',
+                            offset: [5, 0],
+                            className: '!bg-white/95 !backdrop-blur-sm !border !border-red-200 !shadow-xl !rounded-xl !text-slate-800 !font-bold !text-[11px] !px-3 !py-2'
+                        }
+                    ).openTooltip();
                 }
 
                 map.fitBounds(L.latLngBounds(cleanCoords.concat(directCoords)), {padding: [50, 50], maxZoom: 16});
