@@ -19,12 +19,13 @@ import Layout from '../layouts/Layout.astro';
 
         <!-- Real-Time Routing Status Card -->
         <div class="absolute bottom-6 left-4 right-4 md:left-1/2 md:-translate-x-1/2 md:w-[32rem] z-[400] bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 text-center">
-            <h2 id="route-title" class="text-lg font-extrabold text-slate-900 mb-1">Global Routing Engine (OSRM)</h2>
-            <p id="route-instructions" class="text-xs font-medium text-slate-500 mb-4">Click anywhere on the map to set your <b>Origin</b>, then click your <b>Destination</b>.</p>
-            <div id="route-stats" class="hidden bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl p-3 text-xs font-bold mb-4"></div>
-            <button id="reset-btn" onclick="window.location.reload()" class="hidden w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition text-xs">
-                Reset Map Pins
-            </button>
+            <div class="flex flex-col items-center justify-center text-center">
+              <span class="inline-flex items-center gap-1.5 px-4 py-1.5 mb-3 rounded-full bg-amber-100 border border-amber-300 text-amber-800 text-sm font-bold shadow-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                In Development
+              </span>
+              <p class="text-slate-600 dark:text-slate-400 text-sm">Interactive map pinning and OSRM routing are being finalized for InnovateX.</p>
+            </div>
         </div>
     </div>
 
@@ -64,7 +65,7 @@ import Layout from '../layouts/Layout.astro';
                             const route = data.routes[0];
                             const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
                             
-                            L.polyline(coords, {color: '#059669', weight: 6, opacity: 0.9}).addTo(routeLayer);
+                            L.polyline(coords, {color: '#3b82f6', weight: 6, opacity: 0.9}).addTo(routeLayer);
                             map.fitBounds(L.latLngBounds(coords), {padding: [50, 50]});
 
                             const km = (route.distance / 1000).toFixed(2);
