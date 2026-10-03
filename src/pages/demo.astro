@@ -161,7 +161,7 @@ import Layout from '../layouts/Layout.astro';
                 nodeA: [19.0645, 72.9972], // Replace with Node A
                 nodeB: [19.0815, 72.9930], // Replace with Node B
                 nodeC: [19.0735, 72.9985], // Replace with Node C
-                nodeD: [19.0732, 72.9902]  // Replace with Node D
+                nodeD: [19.0782, 72.9978]  // Replace with Node D
             };
 
             const nodeNames = {
@@ -229,12 +229,7 @@ import Layout from '../layouts/Layout.astro';
                         btnArterialPath.className = "flex-1 py-2 rounded-lg text-xs font-semibold text-slate-400 transition";
                     }
                     
-                    // Show all 4 nodes on the map when no route is active
-                    Object.keys(nodes).forEach(key => {
-                        L.marker(nodes[key], {icon: createNodeIcon()})
-                            .addTo(activeMarkersLayer)
-                            .bindTooltip(nodeNames[key], {permanent: true, direction: 'bottom', className: 'text-xs font-bold mt-1 bg-white/90 border-0 shadow-sm rounded px-1'});
-                    });
+
                     
                     map.setView([19.0740, 72.9960], 15);
                     return;
