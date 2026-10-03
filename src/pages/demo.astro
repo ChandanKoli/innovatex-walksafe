@@ -273,6 +273,40 @@ import Layout from '../layouts/Layout.astro';
                 L.polyline(directCoords, {color: '#94a3b8', weight: 4, dashArray: '8, 8', opacity: 0.8}).addTo(directRouteLayer);
                 L.polyline(cleanCoords, {color: '#3b82f6', weight: 6, opacity: 0.9}).addTo(cleanRouteLayer);
                 
+                if (orig === 'nodeB' || dest === 'nodeB') {
+                    // Define the exact coordinates for the sewage corner segment
+                    const odorHazardSegment = [
+                        [19.077407, 72.990772],
+                        [19.07752, 72.990685],
+                        [19.077664, 72.990637],
+                        [19.077811, 72.990629]
+                    ];
+
+                    // Draw the green hazard overlay
+                    const hazardLine = L.polyline(odorHazardSegment, {
+                        color: '#10b981',
+                        weight: 8,
+                        opacity: 0.95,
+                        lineCap: 'round',
+                        lineJoin: 'round'
+                    }).addTo(cleanRouteLayer);
+
+                    // Add a small tooltip to the center of the hazard segment
+                    hazardLine.bindTooltip(`
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-2 w-2 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            <span>Bad Odor: Open Sewage</span>
+                        </div>
+                    `, {
+                        permanent: true, 
+                        direction: 'right',
+                        className: 'bg-white/95 backdrop-blur-sm text-emerald-800 font-bold border border-emerald-200 shadow-xl rounded-lg text-[11px] px-3 py-2'
+                    }).openTooltip();
+                }
+
                 map.fitBounds(L.latLngBounds(cleanCoords.concat(directCoords)), {padding: [50, 50], maxZoom: 16});
             };
 
