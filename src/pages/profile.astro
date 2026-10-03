@@ -4,55 +4,55 @@ import Layout from '../layouts/Layout.astro';
 <Layout title="Commuter Profile | WalkSafe">
     <div class="max-w-xl mx-auto px-4 py-8 md:py-12 min-h-[calc(100vh-3.5rem)] flex flex-col justify-center">
         
-        <a href="/" class="text-sm font-semibold text-emerald-600 flex items-center gap-1 mb-6 hover:text-emerald-700 w-fit transition">
+        <a href="/" class="text-sm font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 mb-6 hover:text-emerald-700 dark:hover:text-emerald-300 w-fit transition">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
             Back to Home
         </a>
 
-        <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-6 md:p-8">
-            <h1 class="text-2xl font-extrabold text-slate-900 mb-6 flex items-center gap-3">
-                <svg class="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        <div class="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-xl p-6 md:p-8">
+            <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white mb-6 flex items-center gap-3">
+                <svg class="w-7 h-7 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
                 Commuter Profile
             </h1>
             
             <div class="space-y-6">
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Display Name</label>
-                    <input type="text" placeholder="e.g. Chandan Koli" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Display Name</label>
+                    <input type="text" placeholder="e.g. Chandan Koli" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-slate-900 dark:text-white dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition" />
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Walking Velocity</label>
-                    <div class="flex flex-col sm:flex-row gap-2 bg-slate-100 p-1.5 rounded-xl">
-                        <button class="flex-1 py-2 text-sm font-bold rounded-lg bg-white shadow-sm text-emerald-700 border border-slate-200">Standard</button>
-                        <button class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200/50 transition">Relaxed</button>
-                        <button class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-200/50 transition">Brisk</button>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Walking Velocity</label>
+                    <div class="flex flex-col sm:flex-row gap-2 bg-slate-100 dark:bg-slate-900/50 p-1.5 rounded-xl">
+                        <button class="flex-1 py-2 text-sm font-bold rounded-lg bg-white dark:bg-slate-800 shadow-sm text-emerald-700 dark:text-emerald-400 border border-slate-200 dark:border-slate-700">Standard</button>
+                        <button class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition">Relaxed</button>
+                        <button class="flex-1 py-2 text-sm font-semibold rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition">Brisk</button>
                     </div>
-                    <p class="text-xs font-medium text-slate-500 mt-2 ml-1">Standard (4.5 km/h) — Typical transit walking velocity.</p>
+                    <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mt-2 ml-1">Standard (4.5 km/h) — Typical transit walking velocity.</p>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Respiratory Sensitivity</label>
+                    <label class="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Respiratory Sensitivity</label>
                     <div class="flex flex-col gap-2">
-                        <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/40 cursor-pointer">
+                        <label class="flex items-center gap-3 p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/40 dark:bg-emerald-900/30 dark:border-emerald-500 cursor-pointer">
                             <input type="radio" name="sensitivity" checked class="w-4 h-4 text-emerald-600 focus:ring-emerald-500" />
                             <div>
-                                <div class="text-sm font-bold text-emerald-900">Standard Commuter</div>
-                                <div class="text-xs font-medium text-emerald-700/80">Balanced distance and exposure routing.</div>
+                                <div class="text-sm font-bold text-emerald-900 dark:text-emerald-400">Standard Commuter</div>
+                                <div class="text-xs font-medium text-emerald-700/80 dark:text-emerald-300/80">Balanced distance and exposure routing.</div>
                             </div>
                         </label>
                         
-                        <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition">
+                        <label class="flex items-center gap-3 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition">
                             <input type="radio" name="sensitivity" class="w-4 h-4 text-emerald-600 focus:ring-emerald-500" />
                             <div>
-                                <div class="text-sm font-bold text-slate-700">Respiratory Sensitive / Asthma</div>
-                                <div class="text-xs font-medium text-slate-500">Strict avoidance of PM10 dust and unpaved shoulders.</div>
+                                <div class="text-sm font-bold text-slate-700 dark:text-slate-300">Respiratory Sensitive / Asthma</div>
+                                <div class="text-xs font-medium text-slate-500 dark:text-slate-400">Strict avoidance of PM10 dust and unpaved shoulders.</div>
                             </div>
                         </label>
                     </div>
                 </div>
                 
-                <button class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-sm transition mt-2">
+                <button class="w-full bg-slate-900 dark:bg-emerald-600 hover:bg-slate-800 dark:hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl shadow-sm transition mt-2">
                     Save Preferences
                 </button>
             </div>
